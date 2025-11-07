@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".WorkoutTrackerActivity"/>
+
         <activity android:name=".DashboardActivity"/>
 
     </application>

@@ -1,7 +1,8 @@
 package hku.cs.comp3330_musclemonster
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
+import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 
@@ -11,8 +12,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        // Example of accessing a view
-        val greetingText: TextView = findViewById(R.id.tvGreeting)
-        greetingText.text = "Hello XML World!"
+        val workoutTrackerButton: Button = findViewById(R.id.btnOpenWorkoutLogs)
+        workoutTrackerButton.setOnClickListener {
+            val intent = Intent(this, WorkoutTrackerActivity::class.java)
+            startActivity(intent)
+        }
+
+        val dashboardButton: Button = findViewById(R.id.btnOpenDashboard)
+        dashboardButton.setOnClickListener {
+            val intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

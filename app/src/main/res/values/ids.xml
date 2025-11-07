@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="metricsSection" type="id" />
+    <item name="tvStreak" type="id" />
+    <item name="tvStreakBadge" type="id" />
+    <item name="recyclerCalendar" type="id" />
+    <item name="tvScheduleLabel" type="id" />
+    <item name="llWeekdays" type="id" />
+    <item name="tgMon" type="id" />
+    <item name="tgTue" type="id" />
+    <item name="tgWed" type="id" />
+    <item name="tgThu" type="id" />
+    <item name="tgFri" type="id" />
+    <item name="tgSat" type="id" />
+    <item name="tgSun" type="id" />
+    <item name="btnLogWorkout" type="id" />
+</resources>

@@ -5,83 +5,101 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Title -->
+    <!-- Metrics Section -->
+    <LinearLayout
+        android:id="@+id/metricsSection"
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvStreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Streak: 5🔥"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginEnd="24dp" />
+
+        <TextView
+            android:id="@+id/tvTotalWorkouts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total: 28"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <!-- Streak Badge (Duolingo-style) -->
     <TextView
-        android:id="@+id/tvDashboardTitle"
+        android:id="@+id/tvStreakBadge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Workout Dashboard"
-        android:textSize="24sp"
+        android:text="🔥 7-Day Streak"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="20sp"
+        android:background="@drawable/streak_badge_background"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/metricsSection"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp"/>
 
-    <!-- Stats Card -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardStats"
+    <!-- Calendar Section (shows workout days + planned days) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerCalendar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        android:layout_margin="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvDashboardTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/tvTotalWorkouts"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Total: 0"/>
-
-            <TextView
-                android:id="@+id/tvTotalMinutes"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Minutes: 0"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- (Optional) Chart Area -->
-    <!-- You can add MPAndroidChart or similar library view here for stats charting -->
-    <!-- <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/lineChart"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        app:layout_constraintTop_toBottomOf="@id/cardStats"
+        android:layout_height="300dp"
+        app:layout_constraintTop_toBottomOf="@id/tvStreakBadge"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="16dp"/> -->
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="8dp" />
 
-    <!-- Workout History Title -->
+    <!-- Weekly Schedule Selection -->
     <TextView
-        android:id="@+id/tvHistoryTitle"
+        android:id="@+id/tvScheduleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Workout History"
-        android:textSize="18sp"
+        android:text="Planned workout days:"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/cardStats"
+        app:layout_constraintTop_toBottomOf="@id/recyclerCalendar"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"/>
 
-    <!-- Workout History RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvWorkoutHistory"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tvHistoryTitle"
+    <LinearLayout
+        android:id="@+id/llWeekdays"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tvScheduleLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center">
+
+        <!-- Example: One toggle per weekday -->
+        <ToggleButton android:id="@+id/tgMon" android:textOn="Mon" android:textOff="Mon" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <ToggleButton android:id="@+id/tgTue" android:textOn="Tue" android:textOff="Tue" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <ToggleButton android:id="@+id/tgWed" android:textOn="Wed" android:textOff="Wed" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <ToggleButton android:id="@+id/tgThu" android:textOn="Thu" android:textOff="Thu" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <ToggleButton android:id="@+id/tgFri" android:textOn="Fri" android:textOff="Fri" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <ToggleButton android:id="@+id/tgSat" android:textOn="Sat" android:textOff="Sat" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <ToggleButton android:id="@+id/tgSun" android:textOn="Sun" android:textOff="Sun" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- Quick Log: "Did you work out today?" -->
+    <Button
+        android:id="@+id/btnLogWorkout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log Today's Workout"
+        app:layout_constraintTop_toBottomOf="@id/llWeekdays"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
+        android:layout_marginTop="24dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

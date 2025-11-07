@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11085328871",
+    "project_id": "musclemonster-bce82",
+    "storage_bucket": "musclemonster-bce82.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11085328871:android:b58d1d8da3a0e5261bcd42",
+        "android_client_info": {
+          "package_name": "hku.cs.comp3330_musclemonster"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJtW104_1Fr7jGOfpb1pfDc9Fx0tOZi8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,11 +13,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-
-        // Example of accessing a view
-        val greetingText: TextView = findViewById(R.id.tvGreeting)
-        greetingText.text = "Hello XML World!"
+        setContentView(R.layout.login_page)
 
         // init firestore
         val db = Firebase.firestore

@@ -38,7 +38,13 @@ class PostActivity : AppCompatActivity() {
 
         val username = intent.getStringExtra("username") ?: "guest"
 
-        btnClose.setOnClickListener { finish() }
+
+        btnClose.setOnClickListener {
+            val i = Intent(this, DashboardActivity::class.java)
+            i.putExtra("username", username)
+            startActivity(i)
+            finish()
+        }
 
         btnSubmitPost.setOnClickListener {
             val text = etPost.text.toString().trim()

@@ -2,26 +2,65 @@ package hku.cs.comp3330_musclemonster
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.login_page)
 
-        val workoutTrackerButton: Button = findViewById(R.id.btnOpenWorkoutLogs)
-        workoutTrackerButton.setOnClickListener {
-            val intent = Intent(this, WorkoutTrackerActivity::class.java)
+        val etUsername = findViewById<TextInputEditText>(R.id.etUsername)
+        val etPassword = findViewById<TextInputEditText>(R.id.etPassword)
+        val btnLogin   = findViewById<MaterialButton>(R.id.btnLogin)
+        val btnCreate  = findViewById<MaterialButton>(R.id.btnCreateAccount)
+
+        val db = Firebase.firestore
+
+        // ✅ Go to Create Account page
+        btnCreate.setOnClickListener {
+            val intent = Intent(this, CreateAccountActivity::class.java)
             startActivity(intent)
         }
 
-        val dashboardButton: Button = findViewById(R.id.btnOpenDashboard)
-        dashboardButton.setOnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
-            startActivity(intent)
+        // ✅ Login logic
+        btnLogin.setOnClickListener {
+            val username = etUsername.text?.toString()?.trim().orEmpty()
+            val password = etPassword.text?.toString()?.trim().orEmpty()
+
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Enter username and password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            db.collection("users").document(username).get()
+                .addOnSuccessListener { doc ->
+                    if (!doc.exists()) {
+                        Toast.makeText(this, "Account not found", Toast.LENGTH_SHORT).show()
+                        return@addOnSuccessListener
+                    }
+
+                    val savedPassword = doc.getString("password") ?: ""
+                    if (password == savedPassword) {
+                        Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+
+                        // ✅ Navigate to dashboard
+                        val intent = Intent(this, DashboardActivity::class.java)
+                        intent.putExtra("username", username)
+                        startActivity(intent)
+                        finish() // optional, prevents back navigation to login
+                    } else {
+                        Toast.makeText(this, "Incorrect password", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Login failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }

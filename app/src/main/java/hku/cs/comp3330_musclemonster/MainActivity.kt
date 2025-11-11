@@ -6,8 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,15 +19,15 @@ class MainActivity : AppCompatActivity() {
         val btnLogin   = findViewById<MaterialButton>(R.id.btnLogin)
         val btnCreate  = findViewById<MaterialButton>(R.id.btnCreateAccount)
 
-        val db = Firebase.firestore
+        val db = FirebaseFirestore.getInstance()
 
-        // ✅ Go to Create Account page
+        // Go to Create Account page
         btnCreate.setOnClickListener {
             val intent = Intent(this, CreateAccountActivity::class.java)
             startActivity(intent)
         }
 
-        // ✅ Login logic
+        // Login logic
         btnLogin.setOnClickListener {
             val username = etUsername.text?.toString()?.trim().orEmpty()
             val password = etPassword.text?.toString()?.trim().orEmpty()
@@ -49,8 +48,8 @@ class MainActivity : AppCompatActivity() {
                     if (password == savedPassword) {
                         Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
 
-                        // ✅ Navigate to dashboard
-                        val intent = Intent(this, DashboardActivity::class.java)
+                        // ✅ Navigate directly to PostActivity instead of Dashboard
+                        val intent = Intent(this, PostActivity::class.java)
                         intent.putExtra("username", username)
                         startActivity(intent)
                         finish() // optional, prevents back navigation to login

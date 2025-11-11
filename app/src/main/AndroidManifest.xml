@@ -25,7 +25,10 @@
 
         <activity android:name=".DashboardActivity"/>
         <activity android:name=".CreateAccountActivity" />
-
+        <activity android:name=".PostActivity" />
+        <activity android:name=".MyPostsActivity" />
+        <activity android:name=".FriendsActivity" />
+        <activity android:name=".FeedActivity" />
 
     </application>
 

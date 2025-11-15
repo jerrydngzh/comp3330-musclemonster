@@ -7,26 +7,26 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import hku.cs.comp3330_musclemonster.R
 
-class WorkoutActivity : AppCompatActivity() {
+class ExerciseEditActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_workout)
+        setContentView(R.layout.activity_excercise_edit)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        /*
+        TODO
 
-        //init
-        /* TODO
-            get current date and time to display
+        1. model for an exercise edit
+           - the list of sets and their reps
 
-            setup onclick listeners for buttons
+        2. exercise set list item
+        
 
-            create a model for the workout activity
         */
-
 
     }
 }

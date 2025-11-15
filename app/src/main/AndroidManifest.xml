@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Comp3330musclemonster">
         <activity
+            android:name=".workout.ExerciseEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".workout.ExerciseSearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".workout.WorkoutActivity"
             android:exported="false" />
         <activity

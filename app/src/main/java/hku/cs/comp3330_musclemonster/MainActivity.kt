@@ -49,7 +49,9 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
 
                         // ✅ Navigate directly to PostActivity instead of Dashboard
-                        val intent = Intent(this, PostActivity::class.java)
+//                        val intent = Intent(this, PostActivity::class.java)
+//                        intent.putExtra("username", username)
+                        val intent = Intent(this, DashboardActivity::class.java)
                         intent.putExtra("username", username)
                         startActivity(intent)
                         finish() // optional, prevents back navigation to login

@@ -2,4 +2,7 @@
 <resources>
 
     <style name="Theme.Comp3330musclemonster" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Base.Theme.COMP3330MuscleMonster" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+    </style>
 </resources>

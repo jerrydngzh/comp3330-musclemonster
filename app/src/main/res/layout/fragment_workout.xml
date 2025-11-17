@@ -9,98 +9,100 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_workout_exercise_list"
-        android:layout_width="412dp"
+        android:layout_width="409dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate2"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_workout_datetime" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/textInputEditText"
-        android:layout_width="0dp"
+        android:layout_width="295dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="49dp"
+        android:layout_marginTop="86dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="14dp"
         android:hint="New Workout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button_add_exercise"
+        app:layout_constraintBottom_toTopOf="@+id/tv_workout_datetime"
+        app:layout_constraintEnd_toStartOf="@+id/btn_add_exercise"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_total_volume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="194dp"
-        android:layout_marginEnd="84dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="26dp"
         android:text="Total Volume"
+        app:layout_constraintBottom_toTopOf="@+id/rv_workout_exercise_list"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:text="0"
-        app:layout_constraintBottom_toTopOf="@+id/tv_total_exercises"
-        app:layout_constraintEnd_toEndOf="@+id/tv_total_exercises"
-        app:layout_constraintStart_toStartOf="@+id/tv_total_exercises" />
+        app:layout_constraintStart_toEndOf="@+id/tv_total_exercises" />
 
     <TextView
         android:id="@+id/tv_total_exercises"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
-        android:layout_marginBottom="17dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="26dp"
         android:text="Total Exercises"
         app:layout_constraintBottom_toTopOf="@+id/rv_workout_exercise_list"
         app:layout_constraintEnd_toStartOf="@+id/tv_total_volume"
-        app:layout_constraintHorizontal_bias="0.121"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_add_exercise"
+    <TextView
+        android:id="@+id/tv_total_exercises_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="119dp"
-        android:text="Add"
+        android:layout_marginBottom="13dp"
+        android:text="0"
         app:layout_constraintBottom_toTopOf="@+id/tv_total_exercises"
+        app:layout_constraintEnd_toEndOf="@+id/tv_total_exercises"
+        app:layout_constraintStart_toStartOf="@+id/tv_total_exercises" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_exercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Add"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textInputEditText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_save_workout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Save"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="13dp"
         android:text="0 kg"
         app:layout_constraintBottom_toTopOf="@+id/tv_total_volume"
         app:layout_constraintEnd_toEndOf="@+id/tv_total_volume" />
 
-    <EditText
-        android:id="@+id/editTextDate2"
-        android:layout_width="198dp"
-        android:layout_height="26dp"
+    <TextView
+        android:id="@+id/tv_workout_datetime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="89dp"
-        android:layout_marginEnd="31dp"
-        android:layout_marginBottom="117dp"
-        android:ems="10"
-        android:inputType="date"
+        android:layout_marginBottom="158dp"
+        android:text="Datetime"
         app:layout_constraintBottom_toTopOf="@+id/rv_workout_exercise_list"
-        app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

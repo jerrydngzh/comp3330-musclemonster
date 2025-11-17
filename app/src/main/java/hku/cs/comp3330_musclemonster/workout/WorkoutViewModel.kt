@@ -3,9 +3,11 @@ package hku.cs.comp3330_musclemonster.workout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import hku.cs.comp3330_musclemonster.workout.model.Exercise
 import hku.cs.comp3330_musclemonster.workout.model.ExerciseSet
 import hku.cs.comp3330_musclemonster.workout.model.ExerciseType
+import kotlinx.datetime.Clock
 
 class WorkoutViewModel : ViewModel() {
     private val _exercises = MutableLiveData<MutableList<Exercise>>(mutableListOf())
@@ -15,9 +17,13 @@ class WorkoutViewModel : ViewModel() {
     val exerciseTypes: List<ExerciseType> = listOf()
 
     var name: String = ""
-    var datetime: Int = 0
-    var totalVolume: Int = 0
-    var numExercises: Int = 0
+    var datetime: Long = Clock.System.now().toEpochMilliseconds()
+    var totalVolume: LiveData<Int> = _exercises.map { it ->
+        it.sumOf { ex ->
+            ex.exerciseSets.sumOf { it.weightPerRep * it.repCount }
+        }
+    }
+    var numExercises: LiveData<Int> = _exercises.map { it.size }
     var notes: String = ""
     var duration: Int = 0
 

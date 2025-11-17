@@ -24,11 +24,13 @@ class ExerciseSearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        // TODO set the recycler view w/ the exercise type list
-
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_exercise_search, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // TODO
     }
 }

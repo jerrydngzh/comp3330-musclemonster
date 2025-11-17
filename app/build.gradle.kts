@@ -70,6 +70,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+
     implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
     implementation("com.google.firebase:firebase-firestore")
 }

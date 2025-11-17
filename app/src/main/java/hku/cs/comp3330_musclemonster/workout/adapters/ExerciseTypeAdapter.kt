@@ -8,9 +8,6 @@ import android.view.ViewGroup
 
 import android.widget.TextView
 import androidx.annotation.AttrRes
-import androidx.core.content.ContextCompat
-import androidx.core.text.color
-
 
 import androidx.recyclerview.widget.RecyclerView
 import hku.cs.comp3330_musclemonster.databinding.ItemExerciseSearchTypeBinding
@@ -50,7 +47,6 @@ class ExerciseTypeAdapter(
             holder.itemView.setBackgroundColor(Color.TRANSPARENT)
         }
 
-        // Just report the click
         holder.itemView.setOnClickListener {
             onItemClicked(ex)
         }

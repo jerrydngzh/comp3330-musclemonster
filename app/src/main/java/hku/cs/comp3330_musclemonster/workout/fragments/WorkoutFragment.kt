@@ -70,7 +70,7 @@ class WorkoutFragment : Fragment() {
         // add button
         binding.btnAddExercise.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_workout_container, ExerciseSearchFragment())
+                .replace(R.id.fragment_workout_container, ExerciseSearchFragment.newInstance())
                 .addToBackStack(null)
                 .commit()
         }

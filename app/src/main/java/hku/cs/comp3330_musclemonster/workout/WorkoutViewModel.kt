@@ -10,15 +10,16 @@ import hku.cs.comp3330_musclemonster.workout.model.ExerciseType
 import kotlinx.datetime.Clock
 
 class WorkoutViewModel : ViewModel() {
+
+    // ==== exercises ====
     private val _exercises = MutableLiveData<MutableList<Exercise>>(mutableListOf())
     val exercises: LiveData<MutableList<Exercise>> = _exercises
 
-    // TODO load from local db
+
     val exerciseTypes: List<ExerciseType> = _loadExerciseTypes()
-    private var _selectedExerciseTypes = MutableLiveData<Set<ExerciseType>>(emptySet())
-    var selectedExerciseTypes: LiveData<Set<ExerciseType>> = _selectedExerciseTypes
 
 
+    // === other ===
     var name: String = ""
     var datetime: Long = Clock.System.now().toEpochMilliseconds()
     var totalVolume: LiveData<Int> = _exercises.map { it ->
@@ -30,24 +31,20 @@ class WorkoutViewModel : ViewModel() {
     var notes: String = ""
     var duration: Int = 0
 
-    // ====== Workout Model ======
-    // TODO updating attributes of a workout to be saved to firestore
 
     // ====== Exercises List ======
-    fun addExercises() {
+    fun addExercise(type: ExerciseType) {
         val list = _exercises.value ?: mutableListOf()
-        val selections = _selectedExerciseTypes.value ?: return
-        selections.forEach { type ->
-            list.add(
-                Exercise(
-                    name = type.name,
-                    exerciseType = type.type,
-                    orderIdx = list.size,
-                    exerciseSets = mutableListOf()
-                )
+        val new = list.toMutableList()
+        new.add(
+            Exercise(
+                name = type.name,
+                exerciseType = type.type,
+                orderIdx = list.size,
+                exerciseSets = mutableListOf()
             )
-        }
-        _exercises.value = list
+        )
+        _exercises.value = new
     }
 
     fun removeExercise(index: Int) {
@@ -55,19 +52,6 @@ class WorkoutViewModel : ViewModel() {
         if (index in list.indices) {
             list.removeAt(index)
             _exercises.value = list
-        }
-    }
-
-    fun clearSelectedExercises() {
-        _selectedExerciseTypes.value = emptySet()
-    }
-
-    fun toggleSelectedExercise(exerciseType: ExerciseType) {
-        val selections = _selectedExerciseTypes.value ?: emptySet()
-        if (selections.contains(exerciseType)) {
-            _selectedExerciseTypes.value = selections - exerciseType
-        } else {
-            _selectedExerciseTypes.value = selections + exerciseType
         }
     }
 

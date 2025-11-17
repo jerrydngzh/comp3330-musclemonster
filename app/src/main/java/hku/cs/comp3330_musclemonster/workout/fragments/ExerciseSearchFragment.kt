@@ -19,6 +19,7 @@ class ExerciseSearchFragment : Fragment() {
     }
     private var _binding: FragmentExerciseSearchBinding? = null
     private val binding get() = _binding!!
+
     private val vm: WorkoutViewModel by activityViewModels()
     private lateinit var adapter: ExerciseTypeAdapter
     var exerciseTypeList: List<ExerciseType> = listOf()
@@ -37,29 +38,21 @@ class ExerciseSearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ExerciseTypeAdapter(
-            items = exerciseTypeList,
-            onItemClicked = {
-                vm.selectedExerciseTypes
-            }
-        )
-        binding.rvExerciseTypeList.adapter = adapter
-        binding.rvExerciseTypeList.layoutManager = LinearLayoutManager(requireContext())
-
-        vm.selectedExerciseTypes.observe(viewLifecycleOwner) {
-            adapter.updateSelection(it)
-        }
-
-        // fragment navigation
-        binding.btAddExSearch.setOnClickListener {
-            vm.addExercises()
-            vm.clearSelectedExercises()
+        adapter = ExerciseTypeAdapter(exerciseTypeList) {
+            vm.addExercise(it)
             parentFragmentManager.popBackStack()
         }
+
+        binding.rvExerciseTypeList.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvExerciseTypeList.adapter = adapter
 
         binding.btCancelExSearch.setOnClickListener {
-            vm.clearSelectedExercises()
             parentFragmentManager.popBackStack()
         }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

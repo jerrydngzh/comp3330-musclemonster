@@ -25,18 +25,18 @@
             android:layout_marginTop="16dp"
             android:text="Cancel" />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+<!--        <Space-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1" />-->
 
-        <Button
-            android:id="@+id/bt_add_ex_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="Add" />
+<!--        <Button-->
+<!--            android:id="@+id/bt_add_ex_search"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:text="Add" />-->
 
     </LinearLayout>
 

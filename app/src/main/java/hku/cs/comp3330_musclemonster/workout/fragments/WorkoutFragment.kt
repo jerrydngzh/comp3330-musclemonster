@@ -7,6 +7,7 @@ import android.view.ViewGroup
 
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -33,7 +34,7 @@ class WorkoutFragment : Fragment() {
 
     private var _binding: FragmentWorkoutBinding? = null
     private val binding get() = _binding!!
-    private val workoutViewModel: WorkoutViewModel by viewModels()
+    private val workoutViewModel: WorkoutViewModel by activityViewModels()
     private lateinit var adapter: ExerciseAdapter
 
     // create a type safe reference to views in the layout
@@ -69,7 +70,7 @@ class WorkoutFragment : Fragment() {
         // add button
         binding.btnAddExercise.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_workout_container, ExerciseSearchFragment.newInstance())
+                .replace(R.id.fragment_workout_container, ExerciseSearchFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -103,10 +104,11 @@ class WorkoutFragment : Fragment() {
         }
 
         // Finally, update the adapter with the new data
-//        workoutViewModel.exercises.observe(viewLifecycleOwner, Observer {
-//            adapter. = it
-//            adapter.notifyDataSetChanged()
-//        })
+        workoutViewModel.exercises.observe(viewLifecycleOwner) { list ->
+            adapter.replaceAll(list.toList())
+//            binding.textTotalSets.text = "Sets: ${viewModel.totalSets()}"
+//            binding.textTotalVolume.text = "Volume: ${viewModel.totalWeightVolume()}"
+        }
 
     }
 

@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Base.Theme.COMP3330MuscleMonster">
+        android:theme="@style/Theme.Comp3330musclemonster">
         <activity
             android:name=".workout.WorkoutMainActivity"
             android:exported="false" />

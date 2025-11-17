@@ -4,38 +4,43 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+
 import hku.cs.comp3330_musclemonster.workout.model.Exercise
 import hku.cs.comp3330_musclemonster.workout.model.ExerciseSet
 import hku.cs.comp3330_musclemonster.workout.model.ExerciseType
 import kotlinx.datetime.Clock
 
-class WorkoutViewModel : ViewModel() {
 
-    // ==== exercises ====
+class WorkoutViewModel : ViewModel() {
+    // exercises
     private val _exercises = MutableLiveData<MutableList<Exercise>>(mutableListOf())
     val exercises: LiveData<MutableList<Exercise>> = _exercises
 
     // exercise selection
     private val _selectedExerciseTypes = MutableLiveData<Set<ExerciseType>>(emptySet())
     val selectedExerciseTypes: LiveData<Set<ExerciseType>> = _selectedExerciseTypes
-
     val exerciseTypes: List<ExerciseType> = _loadExerciseTypes()
 
 
     // === other ===
     var name: String = ""
     var datetime: Long = Clock.System.now().toEpochMilliseconds()
-    var totalVolume: LiveData<Int> = _exercises.map { it ->
-        it.sumOf { ex ->
-            ex.exerciseSets.sumOf { it.weightPerRep * it.repCount }
-        }
-    }
-    var numExercises: LiveData<Int> = _exercises.map { it.size }
     var notes: String = ""
     var duration: Int = 0
 
 
-    // ====== Exercises List ======
+    // computed stats
+    var numExercises: LiveData<Int> = _exercises.map { it.size }
+    var totalVolume: LiveData<Int> = _exercises.map { exs ->
+        exs.sumOf { ex ->
+            ex.exerciseSets.sumOf {
+                it.weightPerRep * it.repCount
+            }
+        }
+    }
+
+
+    // =========== viewmodel methods ==============
     fun removeExercise(index: Int) {
         val list = _exercises.value ?: return
         if (index in list.indices) {
@@ -74,25 +79,14 @@ class WorkoutViewModel : ViewModel() {
         _selectedExerciseTypes.value = emptySet()
     }
 
+    // TODO check
+    fun updateExerciseSets(index: Int, newSets: List<ExerciseSet>) {
 
-        // ====== Exercise Sets w/in an Exercise ======
-    fun updateExerciseSets(index: Int, sets: MutableList<ExerciseSet>) {
         val list = _exercises.value ?: return
         if (index in list.indices) {
-            list[index].exerciseSets = sets
+            list[index].exerciseSets = newSets.toMutableList()
             _exercises.value = list
         }
-    }
-
-    // ====== Basic derived stats ======
-    fun totalSets(): Int {
-        return _exercises.value?.sumOf { it.exerciseSets.size } ?: 0
-    }
-
-    fun totalWeightVolume(): Int {
-        return _exercises.value?.sumOf { ex ->
-            ex.exerciseSets.sumOf { it.weightPerRep * it.repCount }
-        } ?: 0
     }
 
     private fun _loadExerciseTypes() : List<ExerciseType> {

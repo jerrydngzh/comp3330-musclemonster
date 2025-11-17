@@ -2,8 +2,8 @@ package hku.cs.comp3330_musclemonster.workout.model
 
 data class ExerciseSet(
     val setNumber: Int,
-    val weightPerRep: Int,
-    val repCount: Int
+    var weightPerRep: Int,
+    var repCount: Int
 ) {
     companion object {
         // for firestore data mapping

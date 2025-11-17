@@ -53,7 +53,7 @@ class WorkoutFragment : Fragment() {
                 parentFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragment_workout_container,
-                        ExerciseEditFragment.newInstance("","")) // TODO
+                        ExerciseEditFragment.newInstance(0)) // TODO supply exercise name/type
                     .addToBackStack(null)
                     .commit()
             },

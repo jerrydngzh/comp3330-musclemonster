@@ -38,21 +38,29 @@ class ExerciseSearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ExerciseTypeAdapter(exerciseTypeList) {
-            vm.addExercise(it)
+        adapter = ExerciseTypeAdapter(
+            items = vm.exerciseTypes,
+            onItemClicked = { vm.toggleExerciseSelection(it) }
+        )
+        binding.rvExerciseTypeList.adapter = adapter
+        binding.rvExerciseTypeList.layoutManager = LinearLayoutManager(requireContext())
+
+        vm.selectedExerciseTypes.observe(viewLifecycleOwner) { adapter.updateSelection(it) }
+
+        binding.btAddExSearch.setOnClickListener {
+            vm.confirmSelections()
             parentFragmentManager.popBackStack()
         }
 
-        binding.rvExerciseTypeList.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvExerciseTypeList.adapter = adapter
-
         binding.btCancelExSearch.setOnClickListener {
+            vm.clearSelections()
             parentFragmentManager.popBackStack()
         }
     }
 
     override fun onDestroyView() {
-        _binding = null
         super.onDestroyView()
+        _binding = null
+        vm.clearSelections()
     }
 }

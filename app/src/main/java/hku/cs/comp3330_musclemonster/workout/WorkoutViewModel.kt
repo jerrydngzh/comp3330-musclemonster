@@ -15,6 +15,9 @@ class WorkoutViewModel : ViewModel() {
     private val _exercises = MutableLiveData<MutableList<Exercise>>(mutableListOf())
     val exercises: LiveData<MutableList<Exercise>> = _exercises
 
+    // exercise selection
+    private val _selectedExerciseTypes = MutableLiveData<Set<ExerciseType>>(emptySet())
+    val selectedExerciseTypes: LiveData<Set<ExerciseType>> = _selectedExerciseTypes
 
     val exerciseTypes: List<ExerciseType> = _loadExerciseTypes()
 
@@ -33,20 +36,6 @@ class WorkoutViewModel : ViewModel() {
 
 
     // ====== Exercises List ======
-    fun addExercise(type: ExerciseType) {
-        val list = _exercises.value ?: mutableListOf()
-        val new = list.toMutableList()
-        new.add(
-            Exercise(
-                name = type.name,
-                exerciseType = type.type,
-                orderIdx = list.size,
-                exerciseSets = mutableListOf()
-            )
-        )
-        _exercises.value = new
-    }
-
     fun removeExercise(index: Int) {
         val list = _exercises.value ?: return
         if (index in list.indices) {
@@ -55,8 +44,38 @@ class WorkoutViewModel : ViewModel() {
         }
     }
 
+    fun toggleExerciseSelection(type: ExerciseType) {
+        val currentSelection = _selectedExerciseTypes.value ?: emptySet()
+        val newSelection = if (currentSelection.contains(type)) {
+            currentSelection.minus(type)
+        } else {
+            currentSelection.plus(type)
+        }
+        _selectedExerciseTypes.value = newSelection
+    }
 
-    // ====== Exercise Sets w/in an Exercise ======
+    fun confirmSelections() {
+        val mainList = _exercises.value ?: mutableListOf()
+        _selectedExerciseTypes.value?.forEach { type ->
+            mainList.add(
+                Exercise(
+                    name = type.name,
+                    exerciseType = type.type,
+                    orderIdx = mainList.size,
+                    exerciseSets = mutableListOf()
+                )
+            )
+        }
+        _exercises.value = mainList
+        clearSelections()
+    }
+
+    fun clearSelections() {
+        _selectedExerciseTypes.value = emptySet()
+    }
+
+
+        // ====== Exercise Sets w/in an Exercise ======
     fun updateExerciseSets(index: Int, sets: MutableList<ExerciseSet>) {
         val list = _exercises.value ?: return
         if (index in list.indices) {

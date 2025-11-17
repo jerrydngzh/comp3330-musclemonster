@@ -106,8 +106,6 @@ class WorkoutFragment : Fragment() {
         // Finally, update the adapter with the new data
         workoutViewModel.exercises.observe(viewLifecycleOwner) { list ->
             adapter.replaceAll(list.toList())
-//            binding.textTotalSets.text = "Sets: ${viewModel.totalSets()}"
-//            binding.textTotalVolume.text = "Volume: ${viewModel.totalWeightVolume()}"
         }
 
     }

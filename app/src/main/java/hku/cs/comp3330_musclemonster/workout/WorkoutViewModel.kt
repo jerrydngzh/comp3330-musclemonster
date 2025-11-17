@@ -13,8 +13,11 @@ class WorkoutViewModel : ViewModel() {
     private val _exercises = MutableLiveData<MutableList<Exercise>>(mutableListOf())
     val exercises: LiveData<MutableList<Exercise>> = _exercises
 
-    // TODO load from db/hard coded list to be used in exercise selection
-    val exerciseTypes: List<ExerciseType> = listOf()
+    // TODO load from local db
+    val exerciseTypes: List<ExerciseType> = _loadExerciseTypes()
+    private var _selectedExerciseTypes = MutableLiveData<Set<ExerciseType>>(emptySet())
+    var selectedExerciseTypes: LiveData<Set<ExerciseType>> = _selectedExerciseTypes
+
 
     var name: String = ""
     var datetime: Long = Clock.System.now().toEpochMilliseconds()
@@ -31,16 +34,19 @@ class WorkoutViewModel : ViewModel() {
     // TODO updating attributes of a workout to be saved to firestore
 
     // ====== Exercises List ======
-    fun addExercise(type: ExerciseType) {
+    fun addExercises() {
         val list = _exercises.value ?: mutableListOf()
-        list.add(
-            Exercise(
-                name = type.name,
-                exerciseType = type.type,
-                orderIdx = list.size,
-                exerciseSets = mutableListOf()
+        val selections = _selectedExerciseTypes.value ?: return
+        selections.forEach { type ->
+            list.add(
+                Exercise(
+                    name = type.name,
+                    exerciseType = type.type,
+                    orderIdx = list.size,
+                    exerciseSets = mutableListOf()
+                )
             )
-        )
+        }
         _exercises.value = list
     }
 
@@ -51,6 +57,20 @@ class WorkoutViewModel : ViewModel() {
             _exercises.value = list
         }
     }
+
+    fun clearSelectedExercises() {
+        _selectedExerciseTypes.value = emptySet()
+    }
+
+    fun toggleSelectedExercise(exerciseType: ExerciseType) {
+        val selections = _selectedExerciseTypes.value ?: emptySet()
+        if (selections.contains(exerciseType)) {
+            _selectedExerciseTypes.value = selections - exerciseType
+        } else {
+            _selectedExerciseTypes.value = selections + exerciseType
+        }
+    }
+
 
     // ====== Exercise Sets w/in an Exercise ======
     fun updateExerciseSets(index: Int, sets: MutableList<ExerciseSet>) {
@@ -70,5 +90,46 @@ class WorkoutViewModel : ViewModel() {
         return _exercises.value?.sumOf { ex ->
             ex.exerciseSets.sumOf { it.weightPerRep * it.repCount }
         } ?: 0
+    }
+
+    private fun _loadExerciseTypes() : List<ExerciseType> {
+        return listOf(// Chest Exercises
+            ExerciseType(id = "chest_01", name = "Bench Press", type = "Chest"),
+            ExerciseType(id = "chest_02", name = "Dumbbell Flyes", type = "Chest"),
+            ExerciseType(id = "chest_03", name = "Incline Dumbbell Press", type = "Chest"),
+            ExerciseType(id = "chest_04", name = "Push-ups", type = "Chest"),
+            ExerciseType(id = "chest_05", name = "Cable Crossover", type = "Chest"),
+
+            // Back Exercises
+            ExerciseType(id = "back_01", name = "Pull-ups", type = "Back"),
+            ExerciseType(id = "back_02", name = "Deadlift", type = "Back"),
+            ExerciseType(id = "back_03", name = "Bent-Over Rows", type = "Back"),
+            ExerciseType(id = "back_04", name = "Lat Pulldown", type = "Back"),
+            ExerciseType(id = "back_05", name = "Seated Cable Rows", type = "Back"),
+
+            // Leg Exercises
+            ExerciseType(id = "legs_01", name = "Squat", type = "Legs"),
+            ExerciseType(id = "legs_02", name = "Leg Press", type = "Legs"),
+            ExerciseType(id = "legs_03", name = "Lunges", type = "Legs"),
+            ExerciseType(id = "legs_04", name = "Leg Curls", type = "Legs"),
+            ExerciseType(id = "legs_05", name = "Calf Raises", type = "Legs"),
+
+            // Shoulder Exercises
+            ExerciseType(id = "shld_01", name = "Overhead Press", type = "Shoulders"),
+            ExerciseType(id = "shld_02", name = "Lateral Raises", type = "Shoulders"),
+            ExerciseType(id = "shld_03", name = "Face Pulls", type = "Shoulders"),
+            ExerciseType(id = "shld_04", name = "Arnold Press", type = "Shoulders"),
+
+            // Arms (Biceps & Triceps)
+            ExerciseType(id = "arms_01", name = "Bicep Curls", type = "Arms"),
+            ExerciseType(id = "arms_02", name = "Tricep Dips", type = "Arms"),
+            ExerciseType(id = "arms_03", name = "Hammer Curls", type = "Arms"),
+            ExerciseType(id = "arms_04", name = "Tricep Pushdowns", type = "Arms"),
+
+            // Core Exercises
+            ExerciseType(id = "core_01", name = "Plank", type = "Core"),
+            ExerciseType(id = "core_02", name = "Crunches", type = "Core"),
+            ExerciseType(id = "core_03", name = "Leg Raises", type = "Core")
+        )
     }
 }

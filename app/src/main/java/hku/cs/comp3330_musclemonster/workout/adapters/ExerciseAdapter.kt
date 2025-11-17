@@ -32,7 +32,12 @@ class ExerciseAdapter(
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val ex = items[position]
         holder.name.text = ex.name
-        holder.summary.text = "${ex.exerciseSets.size} sets • ${ex.exerciseSets.sumOf { it.weightPerRep * it.repCount }} vol"
+        holder.summary.text = buildString {
+            append(ex.exerciseSets.size)
+            append(" sets • ")
+            append(ex.exerciseSets.sumOf { it.weightPerRep * it.repCount })
+            append(" vol")
+        }
         holder.editBtn.setOnClickListener { onEdit(position) }
         holder.deleteBtn.setOnClickListener { onDelete(position) }
     }

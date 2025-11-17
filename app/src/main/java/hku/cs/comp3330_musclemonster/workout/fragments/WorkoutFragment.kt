@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 
@@ -13,14 +12,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 
 import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.databinding.FragmentWorkoutBinding
 import hku.cs.comp3330_musclemonster.workout.WorkoutViewModel
 import hku.cs.comp3330_musclemonster.workout.adapters.ExerciseAdapter
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class WorkoutFragment : Fragment() {
 
@@ -66,7 +69,7 @@ class WorkoutFragment : Fragment() {
         // add button
         binding.btnAddExercise.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_workout_container, ExerciseSearchFragment())
+                .replace(R.id.fragment_workout_container, ExerciseSearchFragment.newInstance())
                 .addToBackStack(null)
                 .commit()
         }
@@ -83,18 +86,27 @@ class WorkoutFragment : Fragment() {
          }
 
         workoutViewModel.numExercises.observe(viewLifecycleOwner, Observer {
-            view.findViewById<TextView>(R.id.tv_total_exercises_count).text = it.toString()
+            binding.tvTotalExercisesCount.text = it.toString()
         })
 
         workoutViewModel.totalVolume.observe(viewLifecycleOwner, Observer {
-            view.findViewById<TextView>(R.id.tv_total_volume).text = it.toString()
+            binding.tvTotalVolume.text = buildString {
+                append(it.toString())
+                append(" kg")
+            }
         })
 
         // setup the datetime and a date picker dialog
-        binding.tvWorkoutDatetime.text = formatMillisToDateString(workoutViewModel.datetime)
+        binding.tvWorkoutDatetime.text = formatMillisToDateTimeString(workoutViewModel.datetime)
         binding.tvWorkoutDatetime.setOnClickListener {
-            showDatePicker()
+            showDateTimePicker()
         }
+
+        // Finally, update the adapter with the new data
+//        workoutViewModel.exercises.observe(viewLifecycleOwner, Observer {
+//            adapter. = it
+//            adapter.notifyDataSetChanged()
+//        })
 
     }
 
@@ -104,15 +116,14 @@ class WorkoutFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun formatMillisToDateString(millis: Long): String {
+    // ========= Helper Functions =========
+    private fun formatMillisToDateTimeString(millis: Long): String {
         val date = Date(millis)
-        // You can customize this pattern (e.g., "MM/dd/yyyy", "EEEE, MMM dd")
-        val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        val formatter = SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a", Locale.getDefault())
         return formatter.format(date)
     }
 
-    private fun showDatePicker() {
-        // Use the currently stored date as the pre-selected value
+    private fun showDateTimePicker() {
         val initialSelection = workoutViewModel.datetime
 
         val datePicker = MaterialDatePicker.Builder.datePicker()
@@ -121,12 +132,40 @@ class WorkoutFragment : Fragment() {
             .build()
 
         datePicker.addOnPositiveButtonClickListener { selectedDateMillis ->
-            workoutViewModel.datetime = selectedDateMillis
-            binding.tvWorkoutDatetime.text = formatMillisToDateString(workoutViewModel.datetime)
+            showTimePicker(selectedDateMillis)
         }
 
         datePicker.show(parentFragmentManager, "DATE_PICKER_TAG")
     }
 
+    private fun showTimePicker(dateOnlyMillis: Long) {
+        val initialCalendar = Calendar.getInstance().apply {
+            timeInMillis = workoutViewModel.datetime
+        }
 
+        val timePicker = MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat.CLOCK_12H) // Use CLOCK_24H for 24-hour format
+            .setHour(initialCalendar.get(Calendar.HOUR_OF_DAY))
+            .setMinute(initialCalendar.get(Calendar.MINUTE))
+            .setTitleText("Select Workout Time")
+            .build()
+
+        timePicker.addOnPositiveButtonClickListener {
+            val combinedCalendar = Calendar.getInstance(TimeZone.getDefault()).apply {
+                timeInMillis = dateOnlyMillis
+
+                set(Calendar.HOUR_OF_DAY, timePicker.hour)
+                set(Calendar.MINUTE, timePicker.minute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+
+            val finalTimestampMillis = combinedCalendar.timeInMillis
+
+            workoutViewModel.datetime = finalTimestampMillis
+            binding.tvWorkoutDatetime.text = formatMillisToDateTimeString(finalTimestampMillis)
+        }
+
+        timePicker.show(parentFragmentManager, "TIME_PICKER_TAG")
+    }
 }

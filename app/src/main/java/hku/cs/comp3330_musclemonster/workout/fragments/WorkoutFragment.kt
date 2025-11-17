@@ -21,20 +21,18 @@ class WorkoutFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // TODO: Use the ViewModel
-
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        /*
-        * TODO
-        *  1. get current time -> populate into the textview
-        * */
-
         return inflater.inflate(R.layout.fragment_workout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // TODO setting up components in WorkoutFragment
     }
 }

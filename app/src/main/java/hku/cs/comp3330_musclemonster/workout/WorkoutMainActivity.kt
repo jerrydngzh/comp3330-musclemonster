@@ -22,6 +22,6 @@ class WorkoutMainActivity : AppCompatActivity() {
                 .commit()
         }
 
-        // TODO: setup saving? / navigation in/out of the workout logging
+        // TODO: navigation in/out of the workout logging
     }
 }

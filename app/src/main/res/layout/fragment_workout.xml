@@ -9,13 +9,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_workout_exercise_list"
-        android:layout_width="409dp"
-        android:layout_height="0dp"
+        android:layout_width="412dp"
+        android:layout_height="501dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_total_exercises"
+        app:layout_constraintTop_toBottomOf="@+id/tv_total_volume"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -45,24 +46,33 @@
         android:id="@+id/tv_total_volume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="41dp"
-        android:text="Total Volume:"
-        app:layout_constraintBottom_toTopOf="@+id/rv_workout_exercise_list"
+        android:layout_marginTop="194dp"
+        android:layout_marginEnd="84dp"
+        android:text="Total Volume"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_total_exercises" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="0"
+        app:layout_constraintBottom_toTopOf="@+id/tv_total_exercises"
+        app:layout_constraintEnd_toEndOf="@+id/tv_total_exercises"
+        app:layout_constraintStart_toStartOf="@+id/tv_total_exercises" />
 
     <TextView
         android:id="@+id/tv_total_exercises"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginBottom="41dp"
-        android:text="Total Exercises:"
+        android:layout_marginStart="84dp"
+        android:layout_marginBottom="17dp"
+        android:text="Total Exercises"
         app:layout_constraintBottom_toTopOf="@+id/rv_workout_exercise_list"
         app:layout_constraintEnd_toStartOf="@+id/tv_total_volume"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_add_exercise" />
+        app:layout_constraintHorizontal_bias="0.121"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_add_exercise"
@@ -76,5 +86,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textInputEditText"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="12dp"
+        android:text="0 kg"
+        app:layout_constraintBottom_toTopOf="@+id/tv_total_volume"
+        app:layout_constraintEnd_toEndOf="@+id/tv_total_volume" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

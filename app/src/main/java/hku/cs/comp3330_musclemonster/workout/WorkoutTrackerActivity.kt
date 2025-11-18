@@ -4,6 +4,7 @@ import android.os.Bundle
 
 import androidx.appcompat.app.AppCompatActivity
 import hku.cs.comp3330_musclemonster.databinding.ActivityWorkoutMainBinding
+import hku.cs.comp3330_musclemonster.utils.Constants
 import hku.cs.comp3330_musclemonster.workout.fragments.WorkoutFragment
 
 class WorkoutTrackerActivity : AppCompatActivity() {
@@ -15,7 +16,7 @@ class WorkoutTrackerActivity : AppCompatActivity() {
         binding = ActivityWorkoutMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val currentUser = intent.getStringExtra("user_id").toString()
+        val currentUser = intent.getStringExtra(Constants.INTENT_ARG_USERNAME).toString()
 
         // init a new fragment if there wasn't a prev state
         if (savedInstanceState == null) {

@@ -16,7 +16,7 @@ class WorkoutRepository(private val db: FirebaseFirestore) {
         val batch = db.batch()
 
         // create the workout doc in the collection
-        val workoutToSave = workout.copy(id = workoutId, userId = currentUserId)
+        val workoutToSave = workout.copy(id = workoutId, username = currentUserId)
         batch.set(newWorkoutRef, workoutToSave)
 
         // exercises subcollection

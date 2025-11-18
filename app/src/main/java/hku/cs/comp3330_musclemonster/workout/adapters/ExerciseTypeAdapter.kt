@@ -45,6 +45,8 @@ class ExerciseTypeAdapter(
             holder.exerciseType.setTextColor(Color.WHITE)
         } else {
             holder.itemView.setBackgroundColor(Color.TRANSPARENT)
+            holder.name.setTextColor(Color.BLACK)
+            holder.exerciseType.setTextColor(Color.BLACK)
         }
 
         holder.itemView.setOnClickListener {

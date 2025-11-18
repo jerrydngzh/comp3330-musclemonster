@@ -26,6 +26,7 @@ class WorkoutViewModel : ViewModel() {
     var datetime: Long = Clock.System.now().toEpochMilliseconds()
     var notes: String = ""
     var duration: Int = 0
+    var currentUser: String = ""
 
     // computed basic stats
     var numExercises: LiveData<Int> = _exercises.map { it.size }

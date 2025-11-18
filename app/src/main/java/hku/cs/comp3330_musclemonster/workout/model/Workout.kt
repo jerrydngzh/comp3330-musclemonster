@@ -7,7 +7,7 @@ data class Workout(
     @DocumentId
     var id: String = "",
 
-    var userId: String = "",
+    var username: String = "",
 
     var name: String = "",
     var note: String = "",

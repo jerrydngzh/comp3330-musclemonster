@@ -24,15 +24,13 @@ import hku.cs.comp3330_musclemonster.workout.WorkoutViewModel
 import hku.cs.comp3330_musclemonster.workout.adapters.ExerciseAdapter
 import hku.cs.comp3330_musclemonster.workout.data.WorkoutRepository
 import hku.cs.comp3330_musclemonster.workout.model.Workout
+import hku.cs.comp3330_musclemonster.utils.Constants
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-
-private const val ARG_USER_ID = "USER"
-private const val ARG_WORKOUT_ID = "WORKOUT_ID"
 
 
 class WorkoutFragment : Fragment() {
@@ -41,8 +39,8 @@ class WorkoutFragment : Fragment() {
         fun newInstance(user: String, workoutId: String = "") : WorkoutFragment {
             val f = WorkoutFragment()
             val b = Bundle()
-            b.putString(ARG_USER_ID, user)
-            b.putString(ARG_WORKOUT_ID, workoutId)
+            b.putString(Constants.INTENT_ARG_USERNAME, user)
+            b.putString(Constants.INTENT_ARG_WORKOUT_ID, workoutId)
             f.arguments = b
             return f
         }
@@ -61,6 +59,7 @@ class WorkoutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        workoutViewModel.currentUser = arguments?.getString(Constants.INTENT_ARG_USERNAME) ?: return
 
         // setup the adapter for list of exercises
         adapter = ExerciseAdapter(
@@ -83,7 +82,6 @@ class WorkoutFragment : Fragment() {
         binding.rvWorkoutExerciseList.adapter = adapter
 
         // setup fragment navigation
-        // add button
         binding.btnAddExercise.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_workout_container, ExerciseSearchFragment.newInstance())
@@ -91,7 +89,7 @@ class WorkoutFragment : Fragment() {
                 .commit()
         }
 
-        // register the save button for saving the workout
+        // save workout
         binding.btnSaveWorkout.setOnClickListener {
             if (workoutViewModel.exercises.value?.isEmpty() == true) {
                 Toast.makeText(context, "Please add at least one exercise", Toast.LENGTH_LONG).show()
@@ -108,23 +106,26 @@ class WorkoutFragment : Fragment() {
                     durationMinutes = workoutViewModel.duration,
                     note = workoutViewModel.notes
                 )
+
                 val exs = workoutViewModel.exercises.value ?: emptyList()
 
                 try {
                     val workoutId = repo.saveNewWorkout(
-                        arguments?.getString(ARG_USER_ID) ?: return@launch,
+                        workoutViewModel.currentUser,
                         wk,
                         exs
                     )
                     Toast.makeText(context, "Workout saved successfully!", Toast.LENGTH_LONG).show()
 
+                    // workout will pass back a workout id via the intent for referencing
+                    // maintain a list of workout ids
                     val intent = Intent(context, DashboardActivity::class.java)
-                    intent.putExtra("workoutId", workoutId)
+                    intent.putExtra(Constants.INTENT_ARG_WORKOUT_ID, workoutId)
                     startActivity(intent)
 
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    // display error dialog
+
                     Toast.makeText(context, "Failed to save workout: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }

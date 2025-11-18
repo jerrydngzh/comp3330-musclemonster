@@ -11,12 +11,11 @@
         android:id="@+id/rv_workout_exercise_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_notes"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_notes_layout" />
 
     <TextView
         android:id="@+id/empty_recycle_view"
@@ -39,6 +38,7 @@
         android:hint="New Workout"
         android:inputType="textShortMessage"
         android:minHeight="48dp"
+        android:text="New Workout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_save_workout" />
@@ -48,22 +48,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="32dp"
         android:text="Total Volume"
-        app:layout_constraintBottom_toTopOf="@+id/edt_notes"
+        app:layout_constraintBottom_toTopOf="@+id/edt_notes_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.79"
+        app:layout_constraintHorizontal_bias="0.813"
         app:layout_constraintStart_toEndOf="@+id/tv_total_exercises_label" />
 
     <TextView
         android:id="@+id/tv_total_exercises_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="26dp"
+        android:layout_marginTop="8dp"
+
         android:text="Total Exercises"
-        app:layout_constraintBottom_toTopOf="@+id/edt_notes"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_total_exercises_count" />
 
     <TextView
         android:id="@+id/tv_duration"
@@ -71,12 +72,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="36dp"
         android:text="Duration (min)"
-        app:layout_constraintBottom_toTopOf="@+id/edt_notes"
+        app:layout_constraintBottom_toTopOf="@+id/edt_notes_layout"
         app:layout_constraintEnd_toStartOf="@+id/tv_total_exercises_label"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_workout_datetime"
-        app:layout_constraintVertical_bias="0.717" />
+        app:layout_constraintVertical_bias="0.637" />
 
     <EditText
         android:id="@+id/et_duration"
@@ -97,12 +98,13 @@
         android:id="@+id/tv_total_exercises_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="52dp"
         android:text="0"
+
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_total_exercises_label"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputEditText" />
 
     <TextView
         android:id="@+id/tv_total_volume"
@@ -145,19 +147,48 @@
         app:layout_constraintStart_toStartOf="@+id/textInputEditText"
         app:layout_constraintTop_toBottomOf="@+id/textInputEditText" />
 
-    <EditText
-        android:id="@+id/edt_notes"
-        android:layout_width="0dp"
+<!--    <com.google.android.material.textfield.TextInputEditText-->
+<!--        android:id="@+id/edt_notes"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="20dp"-->
+<!--        android:layout_marginTop="267dp"-->
+<!--        android:ems="10"-->
+<!--        android:gravity="start|top"-->
+<!--        android:hint="notes..."-->
+<!--        android:inputType="textLongMessage"-->
+<!--        android:minHeight="48dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edt_notes_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="267dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="notes..."
-        android:inputType="textLongMessage"
-        android:minHeight="48dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_total_exercises_label">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="256dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="notes"
+            android:inputType="textMultiLine"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.675"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

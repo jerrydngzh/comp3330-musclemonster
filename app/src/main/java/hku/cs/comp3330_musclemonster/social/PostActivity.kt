@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import hku.cs.comp3330_musclemonster.DashboardActivity
 import hku.cs.comp3330_musclemonster.R
+import hku.cs.comp3330_musclemonster.utils.Constants
 
 class PostActivity : AppCompatActivity() {
 
@@ -38,12 +39,12 @@ class PostActivity : AppCompatActivity() {
         btnAddFriends = findViewById(R.id.btnAddFriends)
         btnFeed = findViewById(R.id.btnFeed)
 
-        val username = intent.getStringExtra("username") ?: "guest"
+        val username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME) ?: "guest"
 
 
         btnClose.setOnClickListener {
             val i = Intent(this, DashboardActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
             finish()
         }
@@ -80,22 +81,20 @@ class PostActivity : AppCompatActivity() {
 
         btnMyPosts.setOnClickListener {
             val i = Intent(this, MyPostsActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
 
         btnAddFriends.setOnClickListener {
             val i = Intent(this, FriendsActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
 
         btnFeed.setOnClickListener {
             val i = Intent(this, FeedActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
-
-
     }
 }

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
+import hku.cs.comp3330_musclemonster.utils.Constants
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,11 +49,11 @@ class MainActivity : AppCompatActivity() {
                     if (password == savedPassword) {
                         Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
 
-                        // ✅ Navigate directly to PostActivity instead of Dashboard
-//                        val intent = Intent(this, PostActivity::class.java)
-//                        intent.putExtra("username", username)
+                        // Navigate directly to PostActivity instead of Dashboard
+                        // val intent = Intent(this, PostActivity::class.java)
+                        // intent.putExtra("username", username)
                         val intent = Intent(this, DashboardActivity::class.java)
-                        intent.putExtra("username", username)
+                        intent.putExtra(Constants.INTENT_ARG_USERNAME, username)
                         startActivity(intent)
                         finish() // optional, prevents back navigation to login
                     } else {

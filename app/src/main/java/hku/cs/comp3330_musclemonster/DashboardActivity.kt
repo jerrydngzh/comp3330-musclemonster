@@ -8,6 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import hku.cs.comp3330_musclemonster.social.PostActivity
+import hku.cs.comp3330_musclemonster.utils.Constants
+import hku.cs.comp3330_musclemonster.workout.WorkoutTrackerActivity
+import androidx.core.content.edit
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -28,6 +32,17 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
+        // ======= IMPORTANT =========
+        // SharedPreferences to hold small long-lived data (DataStore is a better api)
+        // intents are temporary, data gets destroyed on lifecycle
+        val username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME)
+        val sharedPreferences = getSharedPreferences(Constants.SP, MODE_PRIVATE)
+        if (username != null) {
+            sharedPreferences.edit {
+                putString(Constants.INTENT_ARG_USERNAME, username)
+            }
+        }
+
         // View init
         calendarRecycler = findViewById(R.id.recyclerCalendar)
         btnSocialMedia = findViewById(R.id.btnSocialMedia)
@@ -37,11 +52,17 @@ class DashboardActivity : AppCompatActivity() {
 
         // Navigation Boilerplate
         btnSocialMedia.setOnClickListener {
+            val user = getSharedPreferences(Constants.SP, MODE_PRIVATE)
+                .getString(Constants.INTENT_ARG_USERNAME, "guest")
             val intent = Intent(this, PostActivity::class.java)
+            intent.putExtra(Constants.INTENT_ARG_USERNAME, user.toString())
             startActivity(intent)
         }
         btnWorkoutTracker.setOnClickListener {
+            val user = getSharedPreferences(Constants.SP, MODE_PRIVATE)
+                .getString(Constants.INTENT_ARG_USERNAME, "guest")
             val intent = Intent(this, WorkoutTrackerActivity::class.java)
+            intent.putExtra(Constants.INTENT_ARG_USERNAME, user.toString())
             startActivity(intent)
         }
 
@@ -64,11 +85,7 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     // Calendar Adapter: interactive + yellow glow
-    class CalendarAdapter(
-        private val workoutDays: MutableSet<Int>,
-        private val today: Int,
-        private val dayClickListener: (Int) -> Unit
-    ) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
+    class CalendarAdapter(private val workoutDays: MutableSet<Int>, private val today: Int, private val dayClickListener: (Int) -> Unit) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
         private val days = (1..30).toList()
 
         class DayViewHolder(val view: TextView) : RecyclerView.ViewHolder(view)
@@ -121,10 +138,10 @@ class DashboardActivity : AppCompatActivity() {
         llPRs.removeAllViews()
         // Example structure (will change depending on your data model later)
         val db = FirebaseFirestore.getInstance()
-        val userId = "demoUser" // TODO: Hook up real userId
+        val username = "demoUser" // TODO: Hook up real userId
 
         // Loading logic
-        db.collection("users").document(userId).collection("personalRecords")
+        db.collection("users").document(username).collection("personalRecords")
             .get()
             .addOnSuccessListener { querySnapshot ->
                 for (doc in querySnapshot.documents) {
@@ -140,6 +157,5 @@ class DashboardActivity : AppCompatActivity() {
                 tvError.text = "Could not load PRs yet"
                 llPRs.addView(tvError)
             }
-        // This code keeps it adaptable so you can change how you store, query, or process PRs once you finalize the data model.
     }
 }

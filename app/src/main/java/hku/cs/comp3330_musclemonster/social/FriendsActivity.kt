@@ -1,4 +1,4 @@
-package hku.cs.comp3330_musclemonster
+package hku.cs.comp3330_musclemonster.social
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,9 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
+import hku.cs.comp3330_musclemonster.DashboardActivity
+import hku.cs.comp3330_musclemonster.R
+import hku.cs.comp3330_musclemonster.utils.Constants
 
 class FriendsActivity : AppCompatActivity() {
 
@@ -27,7 +30,7 @@ class FriendsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_friends)
 
-        username = intent.getStringExtra("username") ?: "guest"
+        username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME) ?: "guest"
 
         etFriendUsername    = findViewById(R.id.etFriendUsername)
         btnAddFriendConfirm = findViewById(R.id.btnAddFriendConfirm)
@@ -43,7 +46,7 @@ class FriendsActivity : AppCompatActivity() {
 
         btnCloseFriends.setOnClickListener {
             val i = Intent(this, DashboardActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
             finish()
         }
@@ -80,7 +83,7 @@ class FriendsActivity : AppCompatActivity() {
                                 return@addOnSuccessListener
                             }
 
-                            // 3) Add friend
+                            // 3) Add friend -- "username" is the key stored in firestore representing a user's id
                             val friendData = mapOf("username" to friendName)
                             friendDocRef.set(friendData)
                                 .addOnSuccessListener {
@@ -103,17 +106,17 @@ class FriendsActivity : AppCompatActivity() {
         // Bottom nav
         btnNavPost.setOnClickListener {
             val i = Intent(this, PostActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
         btnMyPosts.setOnClickListener {
             val i = Intent(this, MyPostsActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
         btnFeed.setOnClickListener {
             val i = Intent(this, FeedActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
 

@@ -1,4 +1,4 @@
-package hku.cs.comp3330_musclemonster
+package hku.cs.comp3330_musclemonster.social
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import hku.cs.comp3330_musclemonster.DashboardActivity
+import hku.cs.comp3330_musclemonster.R
+import hku.cs.comp3330_musclemonster.utils.Constants
 
 class MyPostsActivity : AppCompatActivity() {
 
@@ -38,7 +41,7 @@ class MyPostsActivity : AppCompatActivity() {
         rv.layoutManager = LinearLayoutManager(this)
         rv.setHasFixedSize(false) // allow variable-height items to scroll smoothly
 
-        username = intent.getStringExtra("username") ?: "guest"
+        username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME) ?: "guest"
 
         btnCloseMyPosts = findViewById(R.id.btnCloseMyPosts)
         btnNavPost = findViewById(R.id.btnNavPost)
@@ -51,7 +54,7 @@ class MyPostsActivity : AppCompatActivity() {
 
         btnCloseMyPosts.setOnClickListener {
             val i = Intent(this, DashboardActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
             finish()
         }
@@ -59,20 +62,20 @@ class MyPostsActivity : AppCompatActivity() {
         // Bottom bar placeholders
         btnNavPost.setOnClickListener {
             val i = Intent(this, PostActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
         btnMyPosts.isEnabled = false
 
         btnFeed.setOnClickListener {
             val i = Intent(this, FeedActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
 
         btnAddFriends.setOnClickListener {
             val i = Intent(this, FriendsActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
 

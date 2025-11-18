@@ -1,4 +1,4 @@
-package hku.cs.comp3330_musclemonster
+package hku.cs.comp3330_musclemonster.social
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import hku.cs.comp3330_musclemonster.DashboardActivity
+import hku.cs.comp3330_musclemonster.R
+import hku.cs.comp3330_musclemonster.utils.Constants
 import java.util.Date
 
 class FeedActivity : AppCompatActivity() {
@@ -36,7 +39,7 @@ class FeedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
 
-        username = intent.getStringExtra("username") ?: "guest"
+        username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME) ?: "guest"
 
         rv = findViewById(R.id.rvFeed)
         btnCloseFeed = findViewById(R.id.btnCloseFeed)
@@ -62,7 +65,7 @@ class FeedActivity : AppCompatActivity() {
 
         btnCloseFeed.setOnClickListener {
             val i = Intent(this, DashboardActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
             finish()
         }
@@ -70,17 +73,17 @@ class FeedActivity : AppCompatActivity() {
         btnFeed.isEnabled = false
         btnNavPost.setOnClickListener {
             val i = Intent(this, PostActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
         btnMyPosts.setOnClickListener {
             val i = Intent(this, MyPostsActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
         btnAddFriends.setOnClickListener {
             val i = Intent(this, FriendsActivity::class.java)
-            i.putExtra("username", username)
+            i.putExtra(Constants.INTENT_ARG_USERNAME, username)
             startActivity(i)
         }
 
@@ -116,7 +119,7 @@ class FeedActivity : AppCompatActivity() {
                             for (doc in qs.documents) {
                                 val text  = doc.getString("text") ?: ""
                                 val likes = doc.getLong("likes") ?: 0L
-                                val ts    = doc.getTimestamp("createdAt")?.toDate() ?: java.util.Date(0)
+                                val ts    = doc.getTimestamp("createdAt")?.toDate() ?: Date(0)
 
                                 items.add(
                                     FeedPost(

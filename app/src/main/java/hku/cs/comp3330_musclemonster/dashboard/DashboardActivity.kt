@@ -2,10 +2,11 @@ package hku.cs.comp3330_musclemonster.dashboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
@@ -15,29 +16,41 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardCalendarAdapter
+import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardDayHeaderAdapter
+import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardStatisticsAdapter
 import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardWorkoutItemAdapter
+import hku.cs.comp3330_musclemonster.dashboard.utils.DashboardStatisticsCalculator
 import hku.cs.comp3330_musclemonster.data.WorkoutRepository
 import hku.cs.comp3330_musclemonster.social.PostActivity
 import hku.cs.comp3330_musclemonster.utils.Constants
 import hku.cs.comp3330_musclemonster.workout.WorkoutTrackerActivity
+import hku.cs.comp3330_musclemonster.workout.model.Exercise
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class DashboardActivity : AppCompatActivity() {
 
     // UI elements
+    private lateinit var calendarAdapter: DashboardCalendarAdapter
     private lateinit var calendarRecycler: RecyclerView
+    private lateinit var dayHeaderAdapter: DashboardDayHeaderAdapter
+    private lateinit var dayHeaderRecycler: RecyclerView
     private lateinit var workoutAdapter: DashboardWorkoutItemAdapter
     private lateinit var workoutRecycler: RecyclerView
 
     private lateinit var btnSocialMedia: Button
     private lateinit var btnWorkoutTracker: Button
     private lateinit var btnPets: Button
+    private lateinit var btnPreviousMonth: ImageButton
+    private lateinit var btnNextMonth: ImageButton
 
+    private lateinit var tvMonthYear: TextView
     private lateinit var llPRs: LinearLayout
+    private lateinit var statisticsAdapter: DashboardStatisticsAdapter
+    private lateinit var statisticsRecycler: RecyclerView
 
-    // TODO This is dummy; will be set dynamically later
-    private val workoutDays = mutableSetOf(2, 5, 7, 12, 15, 21)
-    private val todayDay = 15 // Dummy: fetch today's date in production
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,13 +69,16 @@ class DashboardActivity : AppCompatActivity() {
         // use the stored username
         username = sharedPreferences.getString(Constants.INTENT_ARG_USERNAME, null)
 
-
         // View init
         calendarRecycler = findViewById(R.id.recyclerCalendar)
+        dayHeaderRecycler = findViewById(R.id.recyclerDayHeaders)
         workoutRecycler = findViewById(R.id.rv_workout_list)
         btnSocialMedia = findViewById(R.id.btnSocialMedia)
         btnWorkoutTracker = findViewById(R.id.btnWorkoutTracker)
         btnPets = findViewById(R.id.btnPets)
+        btnPreviousMonth = findViewById(R.id.btnPreviousMonth)
+        btnNextMonth = findViewById(R.id.btnNextMonth)
+        tvMonthYear = findViewById(R.id.tvMonthYear)
         llPRs = findViewById(R.id.llPRs)
 
         // Navigation Boilerplate
@@ -81,64 +97,97 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // TODO: for when we add pets activity
-//        btnPets.setOnClickListener {
-//            val intent = Intent(this, PetsActivity::class.java)
-//            startActivity(intent)
-//        }
+        // Get current date info for calendar initialization
+        val cal = Calendar.getInstance()
+        val currentMonth = cal.get(Calendar.MONTH)
+        val currentYear = cal.get(Calendar.YEAR)
+        val todayDay = cal.get(Calendar.DAY_OF_MONTH)
+
+        // Update month/year display
+        updateMonthYearDisplay(currentMonth, currentYear)
+
+        // Day of Week Headers
+        dayHeaderAdapter = DashboardDayHeaderAdapter()
+        dayHeaderRecycler.adapter = dayHeaderAdapter
+        dayHeaderRecycler.layoutManager = GridLayoutManager(this, 7)
 
         // Interactive Calendar
-        val calendarAdapter = DashboardCalendarAdapter(workoutDays, todayDay) { day ->
-            // TODO On day click, maybe show details, or allow editing (stub)
-            Toast.makeText(this, "Selected day $day", Toast.LENGTH_SHORT).show()
+        calendarAdapter = DashboardCalendarAdapter(
+            workoutDays = mutableSetOf(),
+            currentMonth = currentMonth,
+            currentYear = currentYear,
+            today = todayDay
+        ) { month, year ->
+            // Update month/year display and reload workouts when month changes
+            updateMonthYearDisplay(month, year)
+            loadWorkoutRecords(username.toString())
         }
         calendarRecycler.adapter = calendarAdapter
         calendarRecycler.layoutManager = GridLayoutManager(this, 7)
+
+        // Month navigation buttons
+        btnPreviousMonth.setOnClickListener {
+            calendarAdapter.previousMonth()
+        }
+
+        btnNextMonth.setOnClickListener {
+            calendarAdapter.nextMonth()
+        }
+
+        // Initialize statistics RecyclerView
+        statisticsRecycler = findViewById(R.id.recyclerStatistics)
+        statisticsAdapter = DashboardStatisticsAdapter(mutableListOf())
+        statisticsRecycler.adapter = statisticsAdapter
+        statisticsRecycler.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+
 
         // Workout Listing
         workoutAdapter = DashboardWorkoutItemAdapter(mutableListOf())
         workoutRecycler.adapter = workoutAdapter
         workoutRecycler.layoutManager = LinearLayoutManager(this)
 
-        // Get PRs boilerplate from Firestore
-        loadPersonalRecords()
         loadWorkoutRecords(username.toString())
     }
 
-
-    // Boilerplate for PRs from Firestore
-    private fun loadPersonalRecords() {
-        llPRs.removeAllViews()
-        // Example structure (will change depending on your data model later)
-        val db = FirebaseFirestore.getInstance()
-        val username = "demoUser" // TODO: Hook up real userId
-
-        // Loading logic
-        db.collection("users").document(username).collection("personalRecords")
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                for (doc in querySnapshot.documents) {
-                    val workoutType = doc.getString("workoutName") ?: "Unknown"
-                    val prValue = doc.getDouble("maxWeight") ?: 0.0
-                    val tvPR = TextView(this)
-                    tvPR.text = "PR for $workoutType: ${if (prValue > 0) prValue else "No Record"}"
-                    llPRs.addView(tvPR)
-                }
-            }
-            .addOnFailureListener { exception ->
-                val tvError = TextView(this)
-                tvError.text = "Could not load PRs yet"
-                llPRs.addView(tvError)
-            }
+    private fun updateMonthYearDisplay(month: Int, year: Int) {
+        val cal = Calendar.getInstance()
+        cal.set(year, month, 1)
+        val dateFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+        tvMonthYear.text = dateFormat.format(cal.time)
     }
 
     private fun loadWorkoutRecords(username: String) {
+        Log.d("CalendarDebug", "loadWorkoutRecords called with username: $username")
+
         lifecycleScope.launch {
             val db = FirebaseFirestore.getInstance()
             val repo = WorkoutRepository(db)
-            val res = repo.getWorkoutsByUsername(username)
+            val workouts = repo.getWorkoutsByUsername(username)
 
-            workoutAdapter.replaceAll(res)
+            Log.d("CalendarDebug", "Fetched ${workouts.size} workouts from Firestore")
+
+            // Load exercises for each workout
+            val exercisesMap = mutableMapOf<String, List<Exercise>>()
+            workouts.forEach { workout ->
+                val exercises = repo.getExercisesByWorkoutId(workout.id)
+                exercisesMap[workout.id] = exercises
+            }
+
+            // Calculate and display statistics
+            val statistics = DashboardStatisticsCalculator.calculateStatistics(
+                workouts,
+                exercisesMap,
+                timeframeDays = 30
+            )
+            statisticsAdapter.replaceAll(statistics)
+
+            // Update calendar and workout list
+            calendarAdapter.replaceAll(workouts, username)
+            workoutAdapter.replaceAll(workouts)
         }
     }
 }

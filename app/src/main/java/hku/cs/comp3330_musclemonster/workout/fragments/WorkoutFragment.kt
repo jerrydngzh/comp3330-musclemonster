@@ -88,7 +88,9 @@ class WorkoutFragment : Fragment() {
                 val repo = WorkoutRepository(db)
                 try {
                     // TODO pass this workoutId back via intent
+                    // TODO get userid into viewmodel on navigation to workout fragments
                     val workoutId = repo.saveNewWorkout(
+                        "user123",
                         Workout(
                             name = workoutViewModel.name,
                             datetime = workoutViewModel.datetime,

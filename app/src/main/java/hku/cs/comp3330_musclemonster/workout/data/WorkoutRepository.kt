@@ -7,12 +7,9 @@ import kotlinx.coroutines.tasks.await
 
 class WorkoutRepository(private val db: FirebaseFirestore) {
 
-    // TODO fetch current user id session login
-    private val currentUserId = "USER_TEST_ID"
-
     private val workoutsCollection = db.collection("workouts")
 
-    suspend fun saveNewWorkout(workout: Workout, exercises: List<Exercise>) : String {
+    suspend fun saveNewWorkout(currentUserId: String, workout: Workout, exercises: List<Exercise>) : String {
         val newWorkoutRef = workoutsCollection.document()
         val workoutId = newWorkoutRef.id
 

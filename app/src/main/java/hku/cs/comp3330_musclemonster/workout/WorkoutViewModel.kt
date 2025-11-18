@@ -77,7 +77,6 @@ class WorkoutViewModel : ViewModel() {
         _selectedExerciseTypes.value = emptySet()
     }
 
-    // TODO check
     fun updateExerciseSets(index: Int, newSets: List<ExerciseSet>) {
 
         val list = _exercises.value ?: return

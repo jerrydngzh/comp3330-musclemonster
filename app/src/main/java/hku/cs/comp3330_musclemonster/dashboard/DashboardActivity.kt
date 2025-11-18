@@ -26,7 +26,6 @@ class DashboardActivity : AppCompatActivity() {
 
     // UI elements
     private lateinit var calendarRecycler: RecyclerView
-
     private lateinit var workoutRecycler: RecyclerView
 
     private lateinit var btnSocialMedia: Button
@@ -56,6 +55,7 @@ class DashboardActivity : AppCompatActivity() {
 
         // View init
         calendarRecycler = findViewById(R.id.recyclerCalendar)
+        workoutRecycler = findViewById(R.id.rv_workout_list)
         btnSocialMedia = findViewById(R.id.btnSocialMedia)
         btnWorkoutTracker = findViewById(R.id.btnWorkoutTracker)
         btnPets = findViewById(R.id.btnPets)
@@ -91,22 +91,14 @@ class DashboardActivity : AppCompatActivity() {
         }
         calendarRecycler.adapter = calendarAdapter
 
-
-        // TODO run this and post result into a viewmodel
-        // then notify the workoutRecyclerAdapter to update itself
-        lifecycleScope.launch {
-            val db = FirebaseFirestore.getInstance()
-            val repo = WorkoutRepository(db)
-            repo.getWorkoutsByUsername(username.toString())
-        }
-
         // Workout Listing
         val workoutListAdapter = DashboardWorkoutItemAdapter(mutableListOf())
 
-        workoutRecycler.layoutManager = LinearLayoutManager(this)
         workoutRecycler.adapter = workoutListAdapter
+        workoutRecycler.layoutManager = LinearLayoutManager(this)
 
         // Get PRs boilerplate from Firestore
+        loadWorkoutRecords(username.toString())
         loadPersonalRecords()
     }
 
@@ -135,5 +127,17 @@ class DashboardActivity : AppCompatActivity() {
                 tvError.text = "Could not load PRs yet"
                 llPRs.addView(tvError)
             }
+    }
+
+    private fun loadWorkoutRecords(username: String) {
+        // then notify the workoutRecyclerAdapter to update itself
+        lifecycleScope.launch {
+            val db = FirebaseFirestore.getInstance()
+            val repo = WorkoutRepository(db)
+            val res = repo.getWorkoutsByUsername(username)
+
+            workoutRecycler.adapter = DashboardWorkoutItemAdapter(res.toMutableList())
+            workoutRecycler.adapter?.notifyDataSetChanged()
+        }
     }
 }

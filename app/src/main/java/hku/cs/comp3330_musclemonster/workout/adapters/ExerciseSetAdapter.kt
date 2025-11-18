@@ -1,7 +1,5 @@
 package hku.cs.comp3330_musclemonster.workout.adapters
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
@@ -39,7 +37,6 @@ class ExerciseSetAdapter(
         holder.weightInput.setText(set.weightPerRep.toString())
         holder.repsInput.setText(set.repCount.toString())
 
-        // TODO validate
         holder.weightInput.doAfterTextChanged { s ->
             set.weightPerRep = s?.toString()?.toIntOrNull() ?: 0
             onChanged(position, set)

@@ -21,15 +21,13 @@ class WorkoutViewModel : ViewModel() {
     val selectedExerciseTypes: LiveData<Set<ExerciseType>> = _selectedExerciseTypes
     val exerciseTypes: List<ExerciseType> = _loadExerciseTypes()
 
-
     // === other ===
     var name: String = ""
     var datetime: Long = Clock.System.now().toEpochMilliseconds()
     var notes: String = ""
     var duration: Int = 0
 
-
-    // computed stats
+    // computed basic stats
     var numExercises: LiveData<Int> = _exercises.map { it.size }
     var totalVolume: LiveData<Int> = _exercises.map { exs ->
         exs.sumOf { ex ->

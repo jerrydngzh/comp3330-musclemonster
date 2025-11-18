@@ -17,15 +17,16 @@
             android:text="Add Set" />
 
         <Space
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btn_exercise_set_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -34,11 +35,19 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_exercise_set_count"
+            android:id="@+id/tv_exercise_set_type_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Number of Sets" />
+            android:textAlignment="viewEnd"
+            android:text="Exerceise Type" />
+
+        <TextView
+            android:id="@+id/tv_exercise_set_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Exercise Name" />
 
     </LinearLayout>
 

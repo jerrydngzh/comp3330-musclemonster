@@ -11,7 +11,7 @@ import hku.cs.comp3330_musclemonster.workout.model.Exercise
 
 class ExerciseAdapter(
     private var items: MutableList<Exercise>,
-    private val onEdit: (Int) -> Unit,
+    private val onEdit: (Int, String, String) -> Unit,
     private val onDelete: (Int) -> Unit
 ) : RecyclerView.Adapter<ExerciseAdapter.Holder>() {
 
@@ -38,7 +38,7 @@ class ExerciseAdapter(
             append(ex.exerciseSets.sumOf { it.weightPerRep * it.repCount })
             append(" vol")
         }
-        holder.editBtn.setOnClickListener { onEdit(position) }
+        holder.editBtn.setOnClickListener { onEdit(position, ex.name, ex.exerciseType) }
         holder.deleteBtn.setOnClickListener { onDelete(position) }
     }
 

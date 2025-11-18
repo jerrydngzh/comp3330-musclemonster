@@ -4,22 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.google.firebase.firestore.FirebaseFirestore
 
 import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.databinding.FragmentWorkoutBinding
 import hku.cs.comp3330_musclemonster.workout.WorkoutViewModel
 import hku.cs.comp3330_musclemonster.workout.adapters.ExerciseAdapter
+import hku.cs.comp3330_musclemonster.workout.data.WorkoutRepository
+import hku.cs.comp3330_musclemonster.workout.model.Workout
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -49,11 +55,11 @@ class WorkoutFragment : Fragment() {
         // setup the adapter for list of exercises
         adapter = ExerciseAdapter(
             items = workoutViewModel.exercises.value ?: mutableListOf(),
-            onEdit = { position ->
+            onEdit = { pos, name, type ->
                 parentFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragment_workout_container,
-                        ExerciseEditFragment.newInstance(0)) // TODO supply exercise name/type
+                        ExerciseEditFragment.newInstance(pos, name, type))
                     .addToBackStack(null)
                     .commit()
             },
@@ -77,11 +83,41 @@ class WorkoutFragment : Fragment() {
 
         // register the save button for saving the workout
         binding.btnSaveWorkout.setOnClickListener {
-            // TODO save workout to db, navigate to dashboard via intent
-            // call the firestore repository
+            viewLifecycleOwner.lifecycleScope.launch {
+                val db = FirebaseFirestore.getInstance()
+                val repo = WorkoutRepository(db)
+                try {
+                    // TODO pass this workoutId back via intent
+                    val workoutId = repo.saveNewWorkout(
+                        Workout(
+                            name = workoutViewModel.name,
+                            datetime = workoutViewModel.datetime,
+                            durationMinutes = workoutViewModel.duration,
+                            note = workoutViewModel.notes
+                        ),
+                        workoutViewModel.exercises.value ?: emptyList()
+                    )
+                    Toast.makeText(context, "Workout saved successfully!", Toast.LENGTH_LONG).show()
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    // display error dialog
+                    Toast.makeText(context, "Failed to save workout: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+                // navigate back to main/dashboard via intent
+                // pass the workout data via intent as well?
+            }
         }
 
         // linking changes on TextViews relative to the viewmodel
+        binding.etDuration.addTextChangedListener {
+            workoutViewModel.duration = it.toString().toIntOrNull() ?: 0
+        }
+
+        binding.edtNotes.addTextChangedListener {
+            workoutViewModel.notes = it.toString()
+        }
+
         binding.textInputEditText.doOnTextChanged { text, start, before, count ->
             workoutViewModel.name = text.toString()
          }
@@ -144,7 +180,7 @@ class WorkoutFragment : Fragment() {
         }
 
         val timePicker = MaterialTimePicker.Builder()
-            .setTimeFormat(TimeFormat.CLOCK_12H) // Use CLOCK_24H for 24-hour format
+            .setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(initialCalendar.get(Calendar.HOUR_OF_DAY))
             .setMinute(initialCalendar.get(Calendar.MINUTE))
             .setTitleText("Select Workout Time")

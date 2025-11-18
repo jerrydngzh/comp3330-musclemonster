@@ -9,7 +9,5 @@ data class Exercise(
     val name: String = "",
     val exerciseType: String = "",
     val totalVolume: Int = 0,
-
-    // TODO manually covert later
     var exerciseSets: MutableList<ExerciseSet> = mutableListOf()
 )

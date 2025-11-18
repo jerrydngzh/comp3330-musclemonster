@@ -17,6 +17,7 @@ import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardCalendarAdapter
 import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardWorkoutItemAdapter
 import hku.cs.comp3330_musclemonster.data.WorkoutRepository
+import hku.cs.comp3330_musclemonster.pet.PetActivity
 import hku.cs.comp3330_musclemonster.social.PostActivity
 import hku.cs.comp3330_musclemonster.utils.Constants
 import hku.cs.comp3330_musclemonster.workout.WorkoutTrackerActivity
@@ -82,10 +83,13 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         // TODO: for when we add pets activity
-//        btnPets.setOnClickListener {
-//            val intent = Intent(this, PetsActivity::class.java)
-//            startActivity(intent)
-//        }
+        btnPets.setOnClickListener {
+            val user = getSharedPreferences(Constants.SP, MODE_PRIVATE)
+                .getString(Constants.INTENT_ARG_USERNAME, "guest")
+            val intent = Intent(this, PetActivity::class.java)
+            intent.putExtra(Constants.INTENT_ARG_USERNAME, user.toString())
+            startActivity(intent)
+        }
 
         // Interactive Calendar
         val calendarAdapter = DashboardCalendarAdapter(workoutDays, todayDay) { day ->

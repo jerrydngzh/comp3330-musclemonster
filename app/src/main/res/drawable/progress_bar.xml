@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background track -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="20dp"/>
+            <solid android:color="#FFCCC2DC"/>
+        </shape>
+    </item>
+
+    <!-- Progress fill -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <corners android:radius="20dp"/>
+                <solid android:color="#FF6650a4"/>
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

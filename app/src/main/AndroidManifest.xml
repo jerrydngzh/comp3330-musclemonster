@@ -24,6 +24,7 @@
 
         <activity android:name=".workout.WorkoutTrackerActivity"/>
         <activity android:name=".dashboard.DashboardActivity"/>
+        <activity android:name=".pet.PetActivity"/>
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".social.PostActivity" />
         <activity android:name=".social.MyPostsActivity" />

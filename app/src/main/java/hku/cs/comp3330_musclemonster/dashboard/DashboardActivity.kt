@@ -26,6 +26,7 @@ class DashboardActivity : AppCompatActivity() {
 
     // UI elements
     private lateinit var calendarRecycler: RecyclerView
+    private lateinit var workoutAdapter: DashboardWorkoutItemAdapter
     private lateinit var workoutRecycler: RecyclerView
 
     private lateinit var btnSocialMedia: Button
@@ -45,13 +46,16 @@ class DashboardActivity : AppCompatActivity() {
         // ======= IMPORTANT =========
         // SharedPreferences to hold small long-lived data (DataStore is a better api)
         // intents are temporary, data gets destroyed on lifecycle
-        val username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME)
+        var username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME)
         val sharedPreferences = getSharedPreferences(Constants.SP, MODE_PRIVATE)
         if (username != null) {
             sharedPreferences.edit {
                 putString(Constants.INTENT_ARG_USERNAME, username)
             }
         }
+        // use the stored username
+        username = sharedPreferences.getString(Constants.INTENT_ARG_USERNAME, null)
+
 
         // View init
         calendarRecycler = findViewById(R.id.recyclerCalendar)
@@ -84,22 +88,21 @@ class DashboardActivity : AppCompatActivity() {
 //        }
 
         // Interactive Calendar
-        calendarRecycler.layoutManager = GridLayoutManager(this, 7)
         val calendarAdapter = DashboardCalendarAdapter(workoutDays, todayDay) { day ->
             // TODO On day click, maybe show details, or allow editing (stub)
             Toast.makeText(this, "Selected day $day", Toast.LENGTH_SHORT).show()
         }
         calendarRecycler.adapter = calendarAdapter
+        calendarRecycler.layoutManager = GridLayoutManager(this, 7)
 
         // Workout Listing
-        val workoutListAdapter = DashboardWorkoutItemAdapter(mutableListOf())
-
-        workoutRecycler.adapter = workoutListAdapter
+        workoutAdapter = DashboardWorkoutItemAdapter(mutableListOf())
+        workoutRecycler.adapter = workoutAdapter
         workoutRecycler.layoutManager = LinearLayoutManager(this)
 
         // Get PRs boilerplate from Firestore
-        loadWorkoutRecords(username.toString())
         loadPersonalRecords()
+        loadWorkoutRecords(username.toString())
     }
 
 
@@ -130,14 +133,12 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun loadWorkoutRecords(username: String) {
-        // then notify the workoutRecyclerAdapter to update itself
         lifecycleScope.launch {
             val db = FirebaseFirestore.getInstance()
             val repo = WorkoutRepository(db)
             val res = repo.getWorkoutsByUsername(username)
 
-            workoutRecycler.adapter = DashboardWorkoutItemAdapter(res.toMutableList())
-            workoutRecycler.adapter?.notifyDataSetChanged()
+            workoutAdapter.replaceAll(res)
         }
     }
 }

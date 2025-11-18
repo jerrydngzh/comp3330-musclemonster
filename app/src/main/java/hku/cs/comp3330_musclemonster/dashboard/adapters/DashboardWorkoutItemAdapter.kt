@@ -32,7 +32,7 @@ class DashboardWorkoutItemAdapter(
         val w = items[position]
 
         holder.name.text = w.name
-        holder.date.text = Utils.formatMillisToDateTimeString(w.datetime) // format to be readable
+        holder.date.text = Utils.formatMillisToDateTimeString(w.datetime)
         holder.numExercises.text = buildString {
             append(w.exercises.size)
             append(" Exercises")
@@ -44,4 +44,10 @@ class DashboardWorkoutItemAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun replaceAll(newItems: List<Workout>) {
+        items.clear()
+        items.addAll(newItems)
+        notifyDataSetChanged()
+    }
 }

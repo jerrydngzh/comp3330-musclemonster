@@ -9,6 +9,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
 import hku.cs.comp3330_musclemonster.dashboard.DashboardActivity
 import hku.cs.comp3330_musclemonster.utils.Constants
+import androidx.core.content.edit
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +23,10 @@ class MainActivity : AppCompatActivity() {
         val btnCreate  = findViewById<MaterialButton>(R.id.btnCreateAccount)
 
         val db = FirebaseFirestore.getInstance()
+
+        // clear existing SharedPreferences
+        val sharedPreferences = getSharedPreferences(Constants.SP, MODE_PRIVATE)
+        sharedPreferences.edit { clear() }
 
         // Go to Create Account page
         btnCreate.setOnClickListener {

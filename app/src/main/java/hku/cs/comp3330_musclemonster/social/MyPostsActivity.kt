@@ -1,4 +1,4 @@
-package hku.cs.comp3330_musclemonster
+package hku.cs.comp3330_musclemonster.social
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import hku.cs.comp3330_musclemonster.DashboardActivity
+import hku.cs.comp3330_musclemonster.R
 
 class MyPostsActivity : AppCompatActivity() {
 

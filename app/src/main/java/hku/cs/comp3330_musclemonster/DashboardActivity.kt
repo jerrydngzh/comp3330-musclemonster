@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import hku.cs.comp3330_musclemonster.social.PostActivity
+import hku.cs.comp3330_musclemonster.workout.WorkoutTrackerActivity
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -41,7 +43,9 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
         btnWorkoutTracker.setOnClickListener {
+            val username = intent.getStringExtra("username")
             val intent = Intent(this, WorkoutTrackerActivity::class.java)
+            intent.putExtra("user_id", username)
             startActivity(intent)
         }
 
@@ -64,11 +68,7 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     // Calendar Adapter: interactive + yellow glow
-    class CalendarAdapter(
-        private val workoutDays: MutableSet<Int>,
-        private val today: Int,
-        private val dayClickListener: (Int) -> Unit
-    ) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
+    class CalendarAdapter(private val workoutDays: MutableSet<Int>, private val today: Int, private val dayClickListener: (Int) -> Unit) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
         private val days = (1..30).toList()
 
         class DayViewHolder(val view: TextView) : RecyclerView.ViewHolder(view)
@@ -140,6 +140,5 @@ class DashboardActivity : AppCompatActivity() {
                 tvError.text = "Could not load PRs yet"
                 llPRs.addView(tvError)
             }
-        // This code keeps it adaptable so you can change how you store, query, or process PRs once you finalize the data model.
     }
 }

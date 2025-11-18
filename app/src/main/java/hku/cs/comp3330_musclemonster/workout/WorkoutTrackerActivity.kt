@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import hku.cs.comp3330_musclemonster.databinding.ActivityWorkoutMainBinding
 import hku.cs.comp3330_musclemonster.workout.fragments.WorkoutFragment
 
-class WorkoutMainActivity : AppCompatActivity() {
+class WorkoutTrackerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityWorkoutMainBinding
 
@@ -15,13 +15,16 @@ class WorkoutMainActivity : AppCompatActivity() {
         binding = ActivityWorkoutMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // initializes the workout fragment if there is preexisting data from prev lifecycle
+        val currentUser = intent.getStringExtra("user_id").toString()
+
+        // init a new fragment if there wasn't a prev state
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(binding.fragmentWorkoutContainer.id, WorkoutFragment())
+                .replace(
+                    binding.fragmentWorkoutContainer.id,
+                    // note: editing a workout, supply a workoutId/pull locally saved data from some global viewmodel?
+                    WorkoutFragment.newInstance(currentUser, workoutId = ""))
                 .commit()
         }
-
-        // TODO: navigation in/out of the workout logging
     }
 }

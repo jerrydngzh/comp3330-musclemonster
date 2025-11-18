@@ -1,16 +1,15 @@
 package hku.cs.comp3330_musclemonster.workout.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
-
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +17,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.google.firebase.firestore.FirebaseFirestore
-
+import hku.cs.comp3330_musclemonster.DashboardActivity
 import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.databinding.FragmentWorkoutBinding
 import hku.cs.comp3330_musclemonster.workout.WorkoutViewModel
@@ -32,10 +31,21 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+private const val ARG_USER_ID = "USER"
+private const val ARG_WORKOUT_ID = "WORKOUT_ID"
+
+
 class WorkoutFragment : Fragment() {
 
     companion object {
-        fun newInstance() = WorkoutFragment()
+        fun newInstance(user: String, workoutId: String = "") : WorkoutFragment {
+            val f = WorkoutFragment()
+            val b = Bundle()
+            b.putString(ARG_USER_ID, user)
+            b.putString(ARG_WORKOUT_ID, workoutId)
+            f.arguments = b
+            return f
+        }
     }
 
     private var _binding: FragmentWorkoutBinding? = null
@@ -83,31 +93,40 @@ class WorkoutFragment : Fragment() {
 
         // register the save button for saving the workout
         binding.btnSaveWorkout.setOnClickListener {
+            if (workoutViewModel.exercises.value?.isEmpty() == true) {
+                Toast.makeText(context, "Please add at least one exercise", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            // setup a coroutine scope
             viewLifecycleOwner.lifecycleScope.launch {
                 val db = FirebaseFirestore.getInstance()
                 val repo = WorkoutRepository(db)
+                val wk = Workout(
+                    name = workoutViewModel.name,
+                    datetime = workoutViewModel.datetime,
+                    durationMinutes = workoutViewModel.duration,
+                    note = workoutViewModel.notes
+                )
+                val exs = workoutViewModel.exercises.value ?: emptyList()
+
                 try {
-                    // TODO pass this workoutId back via intent
-                    // TODO get userid into viewmodel on navigation to workout fragments
                     val workoutId = repo.saveNewWorkout(
-                        "user123",
-                        Workout(
-                            name = workoutViewModel.name,
-                            datetime = workoutViewModel.datetime,
-                            durationMinutes = workoutViewModel.duration,
-                            note = workoutViewModel.notes
-                        ),
-                        workoutViewModel.exercises.value ?: emptyList()
+                        arguments?.getString(ARG_USER_ID) ?: return@launch,
+                        wk,
+                        exs
                     )
                     Toast.makeText(context, "Workout saved successfully!", Toast.LENGTH_LONG).show()
+
+                    val intent = Intent(context, DashboardActivity::class.java)
+                    intent.putExtra("workoutId", workoutId)
+                    startActivity(intent)
 
                 } catch (e: Exception) {
                     e.printStackTrace()
                     // display error dialog
                     Toast.makeText(context, "Failed to save workout: ${e.message}", Toast.LENGTH_LONG).show()
                 }
-                // navigate back to main/dashboard via intent
-                // pass the workout data via intent as well?
             }
         }
 

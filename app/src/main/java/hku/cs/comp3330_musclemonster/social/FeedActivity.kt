@@ -1,4 +1,4 @@
-package hku.cs.comp3330_musclemonster
+package hku.cs.comp3330_musclemonster.social
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import hku.cs.comp3330_musclemonster.DashboardActivity
+import hku.cs.comp3330_musclemonster.R
 import java.util.Date
 
 class FeedActivity : AppCompatActivity() {
@@ -116,7 +118,7 @@ class FeedActivity : AppCompatActivity() {
                             for (doc in qs.documents) {
                                 val text  = doc.getString("text") ?: ""
                                 val likes = doc.getLong("likes") ?: 0L
-                                val ts    = doc.getTimestamp("createdAt")?.toDate() ?: java.util.Date(0)
+                                val ts    = doc.getTimestamp("createdAt")?.toDate() ?: Date(0)
 
                                 items.add(
                                     FeedPost(

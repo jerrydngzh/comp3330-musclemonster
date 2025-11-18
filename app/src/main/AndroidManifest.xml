@@ -13,9 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Comp3330musclemonster">
         <activity
-            android:name=".workout.WorkoutMainActivity"
-            android:exported="true" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Comp3330musclemonster">
@@ -25,14 +22,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".WorkoutTrackerActivity"/>
-
+        <activity android:name=".workout.WorkoutTrackerActivity"/>
         <activity android:name=".DashboardActivity"/>
         <activity android:name=".CreateAccountActivity" />
-        <activity android:name=".PostActivity" />
-        <activity android:name=".MyPostsActivity" />
-        <activity android:name=".FriendsActivity" />
-        <activity android:name=".FeedActivity" />
+        <activity android:name=".social.PostActivity" />
+        <activity android:name=".social.MyPostsActivity" />
+        <activity android:name=".social.FriendsActivity" />
+        <activity android:name=".social.FeedActivity" />
 
     </application>
 

@@ -52,7 +52,6 @@ class ExerciseEditFragment : Fragment() {
         val setsForAdapter: MutableList<ExerciseSet> = exercise?.exerciseSets?.toMutableList() ?: mutableListOf()
         val newlyAddedSets = mutableListOf<ExerciseSet>()
 
-
         if (exercise == null) {
             requireActivity().onBackPressedDispatcher.onBackPressed()
             return

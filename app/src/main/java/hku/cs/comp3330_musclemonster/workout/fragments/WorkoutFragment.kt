@@ -17,14 +17,15 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.google.firebase.firestore.FirebaseFirestore
-import hku.cs.comp3330_musclemonster.DashboardActivity
+import hku.cs.comp3330_musclemonster.dashboard.DashboardActivity
 import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.databinding.FragmentWorkoutBinding
 import hku.cs.comp3330_musclemonster.workout.WorkoutViewModel
 import hku.cs.comp3330_musclemonster.workout.adapters.ExerciseAdapter
-import hku.cs.comp3330_musclemonster.workout.data.WorkoutRepository
+import hku.cs.comp3330_musclemonster.data.WorkoutRepository
 import hku.cs.comp3330_musclemonster.workout.model.Workout
 import hku.cs.comp3330_musclemonster.utils.Constants
+import hku.cs.comp3330_musclemonster.utils.Utils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -156,7 +157,7 @@ class WorkoutFragment : Fragment() {
         })
 
         // setup the datetime and a date picker dialog
-        binding.tvWorkoutDatetime.text = formatMillisToDateTimeString(workoutViewModel.datetime)
+        binding.tvWorkoutDatetime.text = Utils.formatMillisToDateTimeString(workoutViewModel.datetime)
         binding.tvWorkoutDatetime.setOnClickListener {
             showDateTimePicker()
         }
@@ -175,11 +176,6 @@ class WorkoutFragment : Fragment() {
     }
 
     // ========= Helper Functions =========
-    private fun formatMillisToDateTimeString(millis: Long): String {
-        val date = Date(millis)
-        val formatter = SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a", Locale.getDefault())
-        return formatter.format(date)
-    }
 
     private fun showDateTimePicker() {
         val initialSelection = workoutViewModel.datetime
@@ -221,7 +217,7 @@ class WorkoutFragment : Fragment() {
             val finalTimestampMillis = combinedCalendar.timeInMillis
 
             workoutViewModel.datetime = finalTimestampMillis
-            binding.tvWorkoutDatetime.text = formatMillisToDateTimeString(finalTimestampMillis)
+            binding.tvWorkoutDatetime.text = Utils.formatMillisToDateTimeString(finalTimestampMillis)
         }
 
         timePicker.show(parentFragmentManager, "TIME_PICKER_TAG")

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import hku.cs.comp3330_musclemonster.DashboardActivity
+import hku.cs.comp3330_musclemonster.dashboard.DashboardActivity
 import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.utils.Constants
 

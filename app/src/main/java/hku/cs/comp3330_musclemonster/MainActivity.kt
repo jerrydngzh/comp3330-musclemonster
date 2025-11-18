@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
+import hku.cs.comp3330_musclemonster.dashboard.DashboardActivity
 import hku.cs.comp3330_musclemonster.utils.Constants
 
 class MainActivity : AppCompatActivity() {

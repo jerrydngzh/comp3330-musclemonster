@@ -23,7 +23,7 @@
         </activity>
 
         <activity android:name=".workout.WorkoutTrackerActivity"/>
-        <activity android:name=".DashboardActivity"/>
+        <activity android:name=".dashboard.DashboardActivity"/>
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".social.PostActivity" />
         <activity android:name=".social.MyPostsActivity" />

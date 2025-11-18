@@ -39,14 +39,18 @@ class ExerciseTypeAdapter(
         holder.exerciseType.text = ex.type
 
         val context = holder.itemView.context
+        val selectedBgColor = context.getColorFromAttr(android.R.attr.colorPrimary)
+        val selectedTextColor = context.getColorFromAttr(com.google.android.material.R.attr.colorOnPrimary) // Use Material attribute
+        val defaultTextColor = context.getColorFromAttr(com.google.android.material.R.attr.colorOnSurface)   // Use Material attribute
+
         if (currentSelection.contains(ex)) {
-            holder.itemView.setBackgroundColor(context.getColorFromAttr(android.R.attr.colorPrimary))
-            holder.name.setTextColor(Color.WHITE)
-            holder.exerciseType.setTextColor(Color.WHITE)
+            holder.itemView.setBackgroundColor(selectedBgColor)
+            holder.name.setTextColor(selectedTextColor)
+            holder.exerciseType.setTextColor(selectedTextColor) // Use colorOnPrimary
         } else {
             holder.itemView.setBackgroundColor(Color.TRANSPARENT)
-            holder.name.setTextColor(Color.BLACK)
-            holder.exerciseType.setTextColor(Color.BLACK)
+            holder.name.setTextColor(defaultTextColor)
+            holder.exerciseType.setTextColor(defaultTextColor) // Use colorOnSurface
         }
 
         holder.itemView.setOnClickListener {

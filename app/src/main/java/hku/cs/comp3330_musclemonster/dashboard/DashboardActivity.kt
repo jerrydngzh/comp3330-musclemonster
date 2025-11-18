@@ -1,22 +1,33 @@
-package hku.cs.comp3330_musclemonster
+package hku.cs.comp3330_musclemonster.dashboard
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import hku.cs.comp3330_musclemonster.R
+import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardCalendarAdapter
+import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardWorkoutItemAdapter
+import hku.cs.comp3330_musclemonster.data.WorkoutRepository
 import hku.cs.comp3330_musclemonster.social.PostActivity
 import hku.cs.comp3330_musclemonster.utils.Constants
 import hku.cs.comp3330_musclemonster.workout.WorkoutTrackerActivity
-import androidx.core.content.edit
+import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity() {
 
     // UI elements
     private lateinit var calendarRecycler: RecyclerView
+    private lateinit var workoutAdapter: DashboardWorkoutItemAdapter
+    private lateinit var workoutRecycler: RecyclerView
 
     private lateinit var btnSocialMedia: Button
     private lateinit var btnWorkoutTracker: Button
@@ -24,7 +35,7 @@ class DashboardActivity : AppCompatActivity() {
 
     private lateinit var llPRs: LinearLayout
 
-    // This is dummy; will be set dynamically later
+    // TODO This is dummy; will be set dynamically later
     private val workoutDays = mutableSetOf(2, 5, 7, 12, 15, 21)
     private val todayDay = 15 // Dummy: fetch today's date in production
 
@@ -35,16 +46,20 @@ class DashboardActivity : AppCompatActivity() {
         // ======= IMPORTANT =========
         // SharedPreferences to hold small long-lived data (DataStore is a better api)
         // intents are temporary, data gets destroyed on lifecycle
-        val username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME)
+        var username = intent.getStringExtra(Constants.INTENT_ARG_USERNAME)
         val sharedPreferences = getSharedPreferences(Constants.SP, MODE_PRIVATE)
         if (username != null) {
             sharedPreferences.edit {
                 putString(Constants.INTENT_ARG_USERNAME, username)
             }
         }
+        // use the stored username
+        username = sharedPreferences.getString(Constants.INTENT_ARG_USERNAME, null)
+
 
         // View init
         calendarRecycler = findViewById(R.id.recyclerCalendar)
+        workoutRecycler = findViewById(R.id.rv_workout_list)
         btnSocialMedia = findViewById(R.id.btnSocialMedia)
         btnWorkoutTracker = findViewById(R.id.btnWorkoutTracker)
         btnPets = findViewById(R.id.btnPets)
@@ -73,65 +88,23 @@ class DashboardActivity : AppCompatActivity() {
 //        }
 
         // Interactive Calendar
-        calendarRecycler.layoutManager = GridLayoutManager(this, 7)
-        val calendarAdapter = CalendarAdapter(workoutDays, todayDay) { day ->
-            // On day click, maybe show details, or allow editing (stub)
+        val calendarAdapter = DashboardCalendarAdapter(workoutDays, todayDay) { day ->
+            // TODO On day click, maybe show details, or allow editing (stub)
             Toast.makeText(this, "Selected day $day", Toast.LENGTH_SHORT).show()
         }
         calendarRecycler.adapter = calendarAdapter
+        calendarRecycler.layoutManager = GridLayoutManager(this, 7)
+
+        // Workout Listing
+        workoutAdapter = DashboardWorkoutItemAdapter(mutableListOf())
+        workoutRecycler.adapter = workoutAdapter
+        workoutRecycler.layoutManager = LinearLayoutManager(this)
 
         // Get PRs boilerplate from Firestore
         loadPersonalRecords()
+        loadWorkoutRecords(username.toString())
     }
 
-    // Calendar Adapter: interactive + yellow glow
-    class CalendarAdapter(private val workoutDays: MutableSet<Int>, private val today: Int, private val dayClickListener: (Int) -> Unit) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
-        private val days = (1..30).toList()
-
-        class DayViewHolder(val view: TextView) : RecyclerView.ViewHolder(view)
-
-        override fun onCreateViewHolder(
-            parent: android.view.ViewGroup,
-            viewType: Int
-        ): DayViewHolder {
-            val textView = TextView(parent.context).apply {
-                layoutParams = RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.MATCH_PARENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT
-                )
-                textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-                textSize = 16f
-                setPadding(0, 16, 0, 16)
-            }
-            return DayViewHolder(textView)
-        }
-
-        override fun onBindViewHolder(holder: DayViewHolder, position: Int) {
-            val day = days[position]
-            holder.view.text = day.toString()
-
-            // Visual state: yellow glow when marked
-            if (workoutDays.contains(day)) {
-                holder.view.setBackgroundColor(Color.YELLOW)
-            } else {
-                holder.view.setBackgroundColor(Color.TRANSPARENT)
-            }
-
-            // Highlight today (optional)
-            if (day == today) {
-                holder.view.setTextColor(Color.RED)
-            } else {
-                holder.view.setTextColor(Color.BLACK)
-            }
-
-            // Tap-to-toggle
-            holder.view.setOnClickListener {
-                dayClickListener(day)
-            }
-        }
-
-        override fun getItemCount(): Int = days.size
-    }
 
     // Boilerplate for PRs from Firestore
     private fun loadPersonalRecords() {
@@ -157,5 +130,15 @@ class DashboardActivity : AppCompatActivity() {
                 tvError.text = "Could not load PRs yet"
                 llPRs.addView(tvError)
             }
+    }
+
+    private fun loadWorkoutRecords(username: String) {
+        lifecycleScope.launch {
+            val db = FirebaseFirestore.getInstance()
+            val repo = WorkoutRepository(db)
+            val res = repo.getWorkoutsByUsername(username)
+
+            workoutAdapter.replaceAll(res)
+        }
     }
 }

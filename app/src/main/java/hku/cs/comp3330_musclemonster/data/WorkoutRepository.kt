@@ -1,8 +1,11 @@
-package hku.cs.comp3330_musclemonster.workout.data
+package hku.cs.comp3330_musclemonster.data
 
 import com.google.firebase.firestore.FirebaseFirestore
 import hku.cs.comp3330_musclemonster.workout.model.Exercise
 import hku.cs.comp3330_musclemonster.workout.model.Workout
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 
 class WorkoutRepository(private val db: FirebaseFirestore) {
@@ -46,4 +49,28 @@ class WorkoutRepository(private val db: FirebaseFirestore) {
 
         workoutsCollection.document(workoutId).delete().await()
     }
+
+    suspend fun getWorkoutsByUsername(username: String): List<Workout> {
+        val workouts = workoutsCollection
+            .whereEqualTo("username", username)
+            .get()
+            .await()
+            .toObjects(Workout::class.java)
+
+        return coroutineScope {
+            workouts.map { workout ->
+                async {
+                    // Construct the reference to the subcollection using the workout ID
+                    val exercisesSnapshot = db.collection("workouts")
+                        .document(workout.id)
+                        .collection("exercises")
+                        .get()
+                        .await()
+                    val exercises = exercisesSnapshot.toObjects(Exercise::class.java)
+                    return@async workout.copy(exercises = exercises.toMutableList())
+                }
+            }.awaitAll() // Wait for all parallel fetches to complete
+        }
+    }
+
 }

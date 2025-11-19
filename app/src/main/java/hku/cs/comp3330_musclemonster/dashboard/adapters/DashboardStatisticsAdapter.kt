@@ -1,6 +1,5 @@
 package hku.cs.comp3330_musclemonster.dashboard.adapters
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

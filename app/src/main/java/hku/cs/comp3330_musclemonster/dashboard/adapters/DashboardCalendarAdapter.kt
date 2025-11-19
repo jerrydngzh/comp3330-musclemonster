@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import hku.cs.comp3330_musclemonster.workout.model.Workout
 import java.util.Calendar
-import java.util.Date
 
 class DashboardCalendarAdapter(
     private val workoutDays: MutableSet<Int>,

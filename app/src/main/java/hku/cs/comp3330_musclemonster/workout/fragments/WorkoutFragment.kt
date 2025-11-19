@@ -28,10 +28,7 @@ import hku.cs.comp3330_musclemonster.workout.model.Workout
 import hku.cs.comp3330_musclemonster.utils.Constants
 import hku.cs.comp3330_musclemonster.utils.Utils
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 import java.util.TimeZone
 
 
@@ -157,7 +154,7 @@ class WorkoutFragment : Fragment() {
         workoutViewModel.totalVolume.observe(viewLifecycleOwner, Observer {
             binding.tvTotalVolume.text = buildString {
                 append(it.toString())
-                append(" kg")
+//                append(" lbs")
             }
         })
 

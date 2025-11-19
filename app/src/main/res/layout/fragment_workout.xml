@@ -11,8 +11,8 @@
         android:id="@+id/rv_workout_exercise_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
         android:layout_marginTop="10dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,11 +22,13 @@
         android:id="@+id/empty_recycle_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="TextView"
         android:gravity="center"
+        android:text="TextView"
         android:visibility="gone"
-        tools:layout_editor_absoluteX="173dp"
-        tools:layout_editor_absoluteY="483dp" />
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/textInputEditText"
@@ -48,75 +50,77 @@
         android:id="@+id/tv_total_volume_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:text="Total Volume"
+        android:layout_marginBottom="24dp"
+        android:text="Total Volume (lbs)"
         app:layout_constraintBottom_toTopOf="@+id/edt_notes_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.813"
+        app:layout_constraintEnd_toEndOf="@+id/textInputEditText"
+        app:layout_constraintHorizontal_bias="0.931"
         app:layout_constraintStart_toEndOf="@+id/tv_total_exercises_label" />
 
     <TextView
         android:id="@+id/tv_total_exercises_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
 
+        android:layout_marginBottom="24dp"
         android:text="Total Exercises"
+        app:layout_constraintBottom_toTopOf="@+id/edt_notes_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_total_exercises_count" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputEditText"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/tv_dashboard_workout_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="24dp"
         android:text="Duration (min)"
         app:layout_constraintBottom_toTopOf="@+id/edt_notes_layout"
         app:layout_constraintEnd_toStartOf="@+id/tv_total_exercises_label"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_workout_datetime"
-        app:layout_constraintVertical_bias="0.637" />
+        app:layout_constraintHorizontal_bias="0.317"
+        app:layout_constraintStart_toStartOf="@+id/tv_workout_datetime" />
 
     <EditText
         android:id="@+id/et_duration"
-        android:layout_width="72dp"
-        android:layout_height="46dp"
+        android:layout_width="65dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="13dp"
         android:backgroundTint="@android:color/transparent"
         android:inputType="number"
         android:minWidth="48dp"
         android:text="0"
         android:textAlignment="center"
-        android:textSize="19sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/tv_dashboard_workout_duration"
-        app:layout_constraintEnd_toStartOf="@+id/tv_total_exercises_count"
-        app:layout_constraintHorizontal_bias="0.335"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_total_exercises_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="0"
-
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputEditText" />
+        app:layout_constraintEnd_toEndOf="@+id/tv_dashboard_workout_duration"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tv_dashboard_workout_duration" />
 
     <TextView
         android:id="@+id/tv_total_volume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="28dp"
-        android:text="0 kg"
+        android:layout_marginBottom="12dp"
+        android:text="0"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_total_volume_label"
-        app:layout_constraintEnd_toEndOf="@+id/tv_total_volume_label" />
+        app:layout_constraintBottom_toTopOf="@+id/tv_total_volume_label"
+        app:layout_constraintEnd_toEndOf="@+id/tv_total_volume_label"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/tv_total_volume_label" />
+
+    <TextView
+        android:id="@+id/tv_total_exercises_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="12dp"
+        android:text="0"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_total_exercises_label"
+        app:layout_constraintEnd_toEndOf="@+id/tv_total_exercises_label"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="@+id/tv_total_exercises_label" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_add_exercise"
@@ -148,30 +152,29 @@
         app:layout_constraintStart_toStartOf="@+id/textInputEditText"
         app:layout_constraintTop_toBottomOf="@+id/textInputEditText" />
 
-<!--    <com.google.android.material.textfield.TextInputEditText-->
-<!--        android:id="@+id/edt_notes"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="20dp"-->
-<!--        android:layout_marginTop="267dp"-->
-<!--        android:ems="10"-->
-<!--        android:gravity="start|top"-->
-<!--        android:hint="notes..."-->
-<!--        android:inputType="textLongMessage"-->
-<!--        android:minHeight="48dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    <com.google.android.material.textfield.TextInputEditText-->
+    <!--        android:id="@+id/edt_notes"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginHorizontal="20dp"-->
+    <!--        android:layout_marginTop="267dp"-->
+    <!--        android:ems="10"-->
+    <!--        android:gravity="start|top"-->
+    <!--        android:hint="notes..."-->
+    <!--        android:inputType="textLongMessage"-->
+    <!--        android:minHeight="48dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edt_notes_layout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="259dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_total_exercises_label">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_notes"
@@ -183,6 +186,7 @@
             android:gravity="start|top"
             android:hint="notes"
             android:inputType="textMultiLine"
+            android:maxHeight="200dp"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.675"

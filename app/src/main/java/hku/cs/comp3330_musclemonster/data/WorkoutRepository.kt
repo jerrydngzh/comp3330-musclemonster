@@ -7,6 +7,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class WorkoutRepository(private val db: FirebaseFirestore) {
 
@@ -72,5 +75,22 @@ class WorkoutRepository(private val db: FirebaseFirestore) {
             }.awaitAll() // Wait for all parallel fetches to complete
         }
     }
+
+    suspend fun getExercisesByWorkoutId(workoutId: String): List<Exercise> =
+        suspendCoroutine { continuation ->
+            db.collection("workouts")
+                .document(workoutId)
+                .collection("exercises")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val exercises = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(Exercise::class.java)
+                    }
+                    continuation.resume(exercises)
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resumeWithException(exception)
+                }
+        }
 
 }

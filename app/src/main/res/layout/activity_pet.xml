@@ -63,7 +63,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="15dp" />
 
-    <!-- Progress bar — perfect distance -->
+    <!-- Progress bar -->
     <ProgressBar
         android:id="@+id/progressMood"
         style="?android:attr/progressBarStyleHorizontal"

@@ -1,14 +1,11 @@
 package hku.cs.comp3330_musclemonster.pet
 
 import android.os.Bundle
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import hku.cs.comp3330_musclemonster.pet.PetManager
 import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.databinding.ActivityPetBinding
 import kotlinx.coroutines.launch
-import android.content.res.ColorStateList
 
 class PetActivity : AppCompatActivity() {
 
@@ -36,7 +33,7 @@ class PetActivity : AppCompatActivity() {
             }
         }
 
-        // Clicking outside removes focus + hides keyboard
+        // Remove focus when clicking elsewhere
         binding.root.setOnClickListener {
             binding.etPetName.clearFocus()
         }
@@ -62,14 +59,36 @@ class PetActivity : AppCompatActivity() {
             in 30..44 -> R.drawable.pet_sad
             else -> R.drawable.pet_very_sad
         })
+        tvPetSpeech.text = when (pet.happiness) {
+            in 80..100 -> listOf(
+                "You're the best gym buddy!",
+                "Let's crush another workout!",
+                "We are UNSTOPPABLE!"
+            ).random()
 
-//        if (pet.triggerSparkle) {
-//            progressMood.progressTintList = android.graphics.ColorStateList.valueOf(0xFFFFD700.toInt())
-//            ivPet.startAnimation(AnimationUtils.loadAnimation(this@PetActivity, R.anim.sparkle))
-//            progressMood.postDelayed({
-//                progressMood.progressTintList = android.graphics.ColorStateList.valueOf(0xFF4CAF50.toInt())
-//                pet.consumeSparkle()
-//            }, 1200)
-//        }
+            in 60..79 -> listOf(
+                "Feeling strong today!",
+                "You can do this!",
+                "Keep it up!"
+            ).random()
+
+            in 45..59 -> listOf(
+                "I miss our workouts...",
+                "Ready when you are!",
+                "Let's keep going!"
+            ).random()
+
+            in 30..44 -> listOf(
+                "I miss my training buddy",
+                "Let's get moving soon!",
+                "I'm getting sleepy... let's train!"
+            ).random()
+
+            else -> listOf(
+                "I feel weak…",
+                "I miss you",
+                "I've been resting for too long... ready for a workout?"
+            ).random()
+        }
     }
 }

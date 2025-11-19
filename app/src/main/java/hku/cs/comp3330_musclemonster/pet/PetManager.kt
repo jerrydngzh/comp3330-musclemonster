@@ -7,7 +7,6 @@ import com.google.firebase.firestore.SetOptions
 import hku.cs.comp3330_musclemonster.utils.Constants
 import kotlinx.coroutines.tasks.await
 import java.util.Date
-import java.util.concurrent.TimeUnit
 import android.util.Log
 
 class PetManager(private val context: Context) {
@@ -30,7 +29,7 @@ class PetManager(private val context: Context) {
     suspend fun loadPet() {
         try {
             val doc = petDocRef.get().await()
-            Log.d("PetManager", "Document exists: ${doc.exists()}")
+
             // Pet exists, so check if user missed exercise for 1+ weeks
             if (doc.exists()) {
                 happiness = (doc.getLong("happiness")?.toInt() ?: defHappiness).coerceIn(0, 100)
@@ -42,23 +41,25 @@ class PetManager(private val context: Context) {
                 Log.d("PetManager", "Last workout: $lastWorkout")
                 Log.d("PetManager", "Last weeks subtracted: $lastWeeksSubtracted")
 
-                val weeksSinceWorkout = if (lastWorkout != null) {
-                    val msSinceWorkout = System.currentTimeMillis() - lastWorkout.toDate().time
-                    TimeUnit.MILLISECONDS.toDays(msSinceWorkout).toInt() / 7
-                } else 0
+                var weeksSinceWorkout = 0
+                if (lastWorkout != null) {
+                    val currentMs = System.currentTimeMillis()
+                    val workoutMs = lastWorkout.toDate().time
+                    weeksSinceWorkout = ((currentMs - workoutMs) / (1000L * 60 * 60 * 24 * 7)).toInt()
+                }
 
                 val weeksToSubtract = (weeksSinceWorkout - lastWeeksSubtracted).coerceAtLeast(0)
                 Log.d("PetManager", "Weeks since workout: $weeksSinceWorkout, weeks to subtract: $weeksToSubtract")
 
                 if (weeksToSubtract > 0) {
+                    val newHappiness = (happiness - 15 * weeksToSubtract).coerceAtLeast(0)
                     val data = hashMapOf(
-                        "happiness" to (happiness - 15 * weeksToSubtract).coerceAtLeast(0),
+                        "happiness" to newHappiness,
                         "lastWeeksSubtracted" to weeksSinceWorkout
                     )
                     petDocRef.set(data, SetOptions.merge()).await()
+                    happiness = newHappiness
                     Log.d("PetManager", "Updated lastWeeksSubtracted to $weeksSinceWorkout in Firestore")
-//                    happiness = (happiness - 15 * weeksToSubtract).coerceAtLeast(0)
-//                    petDocRef.update(mapOf("lastWeeksSubtracted" to weeksSinceWorkout)).await()
                 }
             } else {
                 // Pet does not exist, so save it with default values
@@ -79,20 +80,41 @@ class PetManager(private val context: Context) {
         val workoutDate = Date(workoutDateMillis)
         val doc = petDocRef.get().await()
         var lastWorkout = Timestamp(workoutDate)
+        var lastWeeksSubtracted = 0
+        Log.d("PetManager", "Last workout: $lastWorkout")
 
         if (doc.exists()) {
+            happiness = doc.getLong("happiness")?.toInt() ?: defHappiness
+            lastWeeksSubtracted = doc.getLong("lastWeeksSubtracted")?.toInt() ?: 0
+
             val prevLastWorkout = doc.getTimestamp("lastWorkout") ?: lastWorkout
+            // If new workout is before previous lastWorkout, keep lastWorkout as the previous
             if (prevLastWorkout.toDate().time > workoutDate.time) {
                 lastWorkout = prevLastWorkout
+                Log.d("PetManager", "Updated last workout to $lastWorkout")
+            } else {
+                // If new workout is after, then update lastWeeksSubtracted to count weeks after this new workout
+                val prevMs = prevLastWorkout.toDate().time
+                val newMs = workoutDate.time
+                val weeksBetween = ((newMs - prevMs) / (1000L * 60 * 60 * 24 * 7)).toInt()
+
+                Log.d("PetManager", "Weeks between workouts: $weeksBetween")
+
+                if (weeksBetween > 0) {
+                    lastWeeksSubtracted = (lastWeeksSubtracted - weeksBetween).coerceAtLeast(0)
+                    Log.d("PetManager", "Adjusted lastWeeksSubtracted: $lastWeeksSubtracted")
+                }
             }
         }
 
         // Update happiness
         happiness = (happiness + 20).coerceAtMost(100)
 
+        Log.d("PetManager", "Updated happiness to $happiness")
         val data = hashMapOf<String, Any>(
             "happiness" to happiness,
-            "lastWorkout" to Timestamp(workoutDate)
+            "lastWorkout" to lastWorkout,
+            "lastWeeksSubtracted" to lastWeeksSubtracted
         )
         petDocRef.set(data, SetOptions.merge()).await()
     }

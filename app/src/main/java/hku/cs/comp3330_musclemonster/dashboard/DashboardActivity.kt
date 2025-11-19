@@ -82,7 +82,7 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // TODO: for when we add pets activity
+        // Pets activity
         btnPets.setOnClickListener {
             val user = getSharedPreferences(Constants.SP, MODE_PRIVATE)
                 .getString(Constants.INTENT_ARG_USERNAME, "guest")

@@ -98,15 +98,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--    <include-->
-<!--        android:id="@+id/petWidget"-->
-<!--        layout="@layout/item_pet"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:layout_marginHorizontal="16dp"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/recyclerCalendar"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent" />-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,7 @@ import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardStatisticsAdapt
 import hku.cs.comp3330_musclemonster.dashboard.adapters.DashboardWorkoutItemAdapter
 import hku.cs.comp3330_musclemonster.dashboard.utils.DashboardStatisticsCalculator
 import hku.cs.comp3330_musclemonster.data.WorkoutRepository
+import hku.cs.comp3330_musclemonster.pet.PetActivity
 import hku.cs.comp3330_musclemonster.social.PostActivity
 import hku.cs.comp3330_musclemonster.utils.Constants
 import hku.cs.comp3330_musclemonster.workout.WorkoutTrackerActivity
@@ -97,6 +98,14 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Pets activity
+        btnPets.setOnClickListener {
+            val user = getSharedPreferences(Constants.SP, MODE_PRIVATE)
+                .getString(Constants.INTENT_ARG_USERNAME, "guest")
+            val intent = Intent(this, PetActivity::class.java)
+            intent.putExtra(Constants.INTENT_ARG_USERNAME, user.toString())
+            startActivity(intent)
+        }
         // Get current date info for calendar initialization
         val cal = Calendar.getInstance()
         val currentMonth = cal.get(Calendar.MONTH)

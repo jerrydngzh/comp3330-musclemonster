@@ -23,6 +23,7 @@ import hku.cs.comp3330_musclemonster.databinding.FragmentWorkoutBinding
 import hku.cs.comp3330_musclemonster.workout.WorkoutViewModel
 import hku.cs.comp3330_musclemonster.workout.adapters.ExerciseAdapter
 import hku.cs.comp3330_musclemonster.data.WorkoutRepository
+import hku.cs.comp3330_musclemonster.pet.PetManager
 import hku.cs.comp3330_musclemonster.workout.model.Workout
 import hku.cs.comp3330_musclemonster.utils.Constants
 import hku.cs.comp3330_musclemonster.utils.Utils
@@ -51,6 +52,7 @@ class WorkoutFragment : Fragment() {
     private val binding get() = _binding!!
     private val workoutViewModel: WorkoutViewModel by activityViewModels()
     private lateinit var adapter: ExerciseAdapter
+    private lateinit var petManager: PetManager
 
     // create a type safe reference to views in the layout
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -60,6 +62,7 @@ class WorkoutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        petManager = PetManager(requireContext())
         workoutViewModel.currentUser = arguments?.getString(Constants.INTENT_ARG_USERNAME) ?: return
 
         // setup the adapter for list of exercises
@@ -107,6 +110,8 @@ class WorkoutFragment : Fragment() {
                     durationMinutes = workoutViewModel.duration,
                     note = workoutViewModel.notes
                 )
+
+                petManager.workoutCompleted(wk.datetime)
 
                 val exs = workoutViewModel.exercises.value ?: emptyList()
 

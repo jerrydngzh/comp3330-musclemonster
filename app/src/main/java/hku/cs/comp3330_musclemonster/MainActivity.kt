@@ -23,6 +23,7 @@ import androidx.work.WorkManager
 import hku.cs.comp3330_musclemonster.notifications.NotificationWorker
 import java.util.concurrent.TimeUnit
 
+
 class MainActivity : AppCompatActivity() {
 
     private val requestPermissionLauncher =

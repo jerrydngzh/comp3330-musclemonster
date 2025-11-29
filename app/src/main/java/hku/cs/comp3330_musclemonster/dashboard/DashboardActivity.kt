@@ -2,7 +2,6 @@ package hku.cs.comp3330_musclemonster.dashboard
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -198,14 +197,10 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun loadWorkoutRecords(username: String) {
-        Log.d("CalendarDebug", "loadWorkoutRecords called with username: $username")
-
         lifecycleScope.launch {
             val db = FirebaseFirestore.getInstance()
             val repo = WorkoutRepository(db)
             val workouts = repo.getWorkoutsByUsername(username)
-
-            Log.d("CalendarDebug", "Fetched ${workouts.size} workouts from Firestore")
 
             workoutsForCurrentMonth = workouts
 

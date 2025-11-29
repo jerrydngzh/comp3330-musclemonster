@@ -37,10 +37,6 @@ class PetManager(private val context: Context) {
                 val lastWorkout = doc.getTimestamp("lastWorkout")
                 val lastWeeksSubtracted = doc.getLong("lastWeeksSubtracted")?.toInt() ?: 0
 
-                Log.d("PetManager", "Current happiness: $happiness")
-                Log.d("PetManager", "Last workout: $lastWorkout")
-                Log.d("PetManager", "Last weeks subtracted: $lastWeeksSubtracted")
-
                 var weeksSinceWorkout = 0
                 if (lastWorkout != null) {
                     val currentMs = System.currentTimeMillis()
@@ -49,7 +45,6 @@ class PetManager(private val context: Context) {
                 }
 
                 val weeksToSubtract = (weeksSinceWorkout - lastWeeksSubtracted).coerceAtLeast(0)
-                Log.d("PetManager", "Weeks since workout: $weeksSinceWorkout, weeks to subtract: $weeksToSubtract")
 
                 if (weeksToSubtract > 0) {
                     val newHappiness = (happiness - 15 * weeksToSubtract).coerceAtLeast(0)
@@ -59,7 +54,6 @@ class PetManager(private val context: Context) {
                     )
                     petDocRef.set(data, SetOptions.merge()).await()
                     happiness = newHappiness
-                    Log.d("PetManager", "Updated lastWeeksSubtracted to $weeksSinceWorkout in Firestore")
                 }
             } else {
                 // Pet does not exist, so save it with default values
@@ -81,8 +75,6 @@ class PetManager(private val context: Context) {
         val doc = petDocRef.get().await()
         var lastWorkout = Timestamp(workoutDate)
         var lastWeeksSubtracted = 0
-        Log.d("PetManager", "Last workout: $lastWorkout")
-
         if (doc.exists()) {
             happiness = doc.getLong("happiness")?.toInt() ?: defHappiness
             lastWeeksSubtracted = doc.getLong("lastWeeksSubtracted")?.toInt() ?: 0
@@ -91,18 +83,14 @@ class PetManager(private val context: Context) {
             // If new workout is before previous lastWorkout, keep lastWorkout as the previous
             if (prevLastWorkout.toDate().time > workoutDate.time) {
                 lastWorkout = prevLastWorkout
-                Log.d("PetManager", "Updated last workout to $lastWorkout")
             } else {
                 // If new workout is after, then update lastWeeksSubtracted to count weeks after this new workout
                 val prevMs = prevLastWorkout.toDate().time
                 val newMs = workoutDate.time
                 val weeksBetween = ((newMs - prevMs) / (1000L * 60 * 60 * 24 * 7)).toInt()
 
-                Log.d("PetManager", "Weeks between workouts: $weeksBetween")
-
                 if (weeksBetween > 0) {
                     lastWeeksSubtracted = (lastWeeksSubtracted - weeksBetween).coerceAtLeast(0)
-                    Log.d("PetManager", "Adjusted lastWeeksSubtracted: $lastWeeksSubtracted")
                 }
             }
         }
@@ -110,7 +98,6 @@ class PetManager(private val context: Context) {
         // Update happiness
         happiness = (happiness + 20).coerceAtMost(100)
 
-        Log.d("PetManager", "Updated happiness to $happiness")
         val data = hashMapOf<String, Any>(
             "happiness" to happiness,
             "lastWorkout" to lastWorkout,

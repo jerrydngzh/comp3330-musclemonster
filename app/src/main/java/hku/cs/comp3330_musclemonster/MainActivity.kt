@@ -1,6 +1,7 @@
 package hku.cs.comp3330_musclemonster
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,12 +11,42 @@ import com.google.firebase.firestore.FirebaseFirestore
 import hku.cs.comp3330_musclemonster.dashboard.DashboardActivity
 import hku.cs.comp3330_musclemonster.utils.Constants
 import androidx.core.content.edit
+import android.Manifest
+import android.content.pm.PackageManager
+import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts // For notifications
+import androidx.core.content.ContextCompat
+import hku.cs.comp3330_musclemonster.notifications.NotificationHelper
 
+import android.widget.Button // Import the Button class
+import androidx.work.* // Import WorkManager classes
+import hku.cs.comp3330_musclemonster.notifications.NotificationWorker
+import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                Log.d("MainActivity", "Notification permission granted.")
+            } else {
+                Log.d("MainActivity", "Notification permission denied.")
+            }
+        }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_page)
+
+        NotificationHelper.createNotificationChannel(this)
+        askNotificationPermission()
 
         val etUsername = findViewById<TextInputEditText>(R.id.etUsername)
         val etPassword = findViewById<TextInputEditText>(R.id.etPassword)

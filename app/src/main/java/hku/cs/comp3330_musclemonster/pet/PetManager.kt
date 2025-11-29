@@ -119,6 +119,19 @@ class PetManager(private val context: Context) {
         petDocRef.set(data, SetOptions.merge()).await()
     }
 
+    suspend fun getPetName(): String {
+        try {
+            val doc = petDocRef.get().await()
+            if (doc.exists()) {            // Return the stored name, or the default name if it's missing/empty
+                return doc.getString("petName")?.takeIf { it.isNotEmpty() } ?: defPetName
+            }
+        } catch (e: Exception) {
+            Log.e("PetManager[getPetName]", "Error fetching pet name: ${e.message}")
+        }
+        // Return the default name in case of an error or if the document doesn't exist
+        return defPetName
+    }
+
     suspend fun updatePetName(newName: String) {
         val cleanName = newName.trim().takeIf { it.isNotEmpty() } ?: defPetName
         petName = cleanName

@@ -14,14 +14,10 @@ import androidx.core.content.edit
 import android.Manifest
 import android.content.pm.PackageManager
 import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts // For notifications
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import hku.cs.comp3330_musclemonster.notifications.NotificationHelper
 
-import android.widget.Button // Import the Button class
-import androidx.work.* // Import WorkManager classes
-import hku.cs.comp3330_musclemonster.notifications.NotificationWorker
-import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     private val requestPermissionLauncher =

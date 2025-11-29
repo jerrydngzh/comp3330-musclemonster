@@ -53,7 +53,6 @@ object NotificationHelper {
         try {
             with(NotificationManagerCompat.from(context)) {
                 notify(NOTIFICATION_ID, builder.build())
-                Log.d("NotificationHelper", "Daily reminder notification shown.")
             }
         } catch (e: SecurityException) {
             Log.e("NotificationHelper", "Missing POST_NOTIFICATIONS permission. Cannot show notification.", e)

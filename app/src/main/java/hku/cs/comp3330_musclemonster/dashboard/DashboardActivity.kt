@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import hku.cs.comp3330_musclemonster.workout.model.Workout
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -52,6 +53,8 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var statisticsAdapter: DashboardStatisticsAdapter
     private lateinit var statisticsRecycler: RecyclerView
 
+    private var workoutsForCurrentMonth: List<Workout> = listOf()
+    private var selectedDay: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,12 +128,21 @@ class DashboardActivity : AppCompatActivity() {
             workoutDays = mutableSetOf(),
             currentMonth = currentMonth,
             currentYear = currentYear,
-            today = todayDay
-        ) { month, year ->
-            // Update month/year display and reload workouts when month changes
-            updateMonthYearDisplay(month, year)
-            loadWorkoutRecords(username.toString())
-        }
+            today = todayDay,
+            onMonthChangeListener = { month, year ->
+                // When the month changes, clear selection and reload
+                updateMonthYearDisplay(month, year)
+                selectedDay = null
+                calendarAdapter.selectedDay = null
+                loadWorkoutRecords(username.toString())
+            },
+            onDateClick = { day ->
+                selectedDay = if (selectedDay == day) null else day
+                calendarAdapter.selectedDay = selectedDay
+                calendarAdapter.notifyDataSetChanged()
+                filterAndDisplayWorkouts()
+            }
+        )
         calendarRecycler.adapter = calendarAdapter
         calendarRecycler.layoutManager = GridLayoutManager(this, 7)
 
@@ -169,6 +181,22 @@ class DashboardActivity : AppCompatActivity() {
         tvMonthYear.text = dateFormat.format(cal.time)
     }
 
+    private fun filterAndDisplayWorkouts() {
+        val day = selectedDay
+        if (day == null) {
+            // If no day is selected, show all workouts for the month
+            workoutAdapter.replaceAll(workoutsForCurrentMonth)
+        } else {
+            // If a day is selected, filter the list
+            val filteredWorkouts = workoutsForCurrentMonth.filter { workout ->
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = workout.datetime
+                calendar.get(Calendar.DAY_OF_MONTH) == day
+            }
+            workoutAdapter.replaceAll(filteredWorkouts)
+        }
+    }
+
     private fun loadWorkoutRecords(username: String) {
         Log.d("CalendarDebug", "loadWorkoutRecords called with username: $username")
 
@@ -178,6 +206,8 @@ class DashboardActivity : AppCompatActivity() {
             val workouts = repo.getWorkoutsByUsername(username)
 
             Log.d("CalendarDebug", "Fetched ${workouts.size} workouts from Firestore")
+
+            workoutsForCurrentMonth = workouts
 
             // Load exercises for each workout
             val exercisesMap = mutableMapOf<String, List<Exercise>>()
@@ -195,8 +225,8 @@ class DashboardActivity : AppCompatActivity() {
             statisticsAdapter.replaceAll(statistics)
 
             // Update calendar and workout list
-            calendarAdapter.replaceAll(workouts, username)
-            workoutAdapter.replaceAll(workouts)
+            calendarAdapter.replaceAll(workoutsForCurrentMonth, username)
+            filterAndDisplayWorkouts()
         }
     }
 }

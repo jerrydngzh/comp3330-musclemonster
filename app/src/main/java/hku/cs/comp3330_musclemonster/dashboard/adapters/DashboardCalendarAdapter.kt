@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import hku.cs.comp3330_musclemonster.R
 import hku.cs.comp3330_musclemonster.workout.model.Workout
 import java.util.Calendar
 
@@ -13,11 +14,14 @@ class DashboardCalendarAdapter(
     private var currentMonth: Int,
     private var currentYear: Int,
     private val today: Int,
-    private val onMonthChangeListener: (month: Int, year: Int) -> Unit
+    private val onMonthChangeListener: (month: Int, year: Int) -> Unit,
+    private val onDateClick: (day: Int) -> Unit
 ) : RecyclerView.Adapter<DashboardCalendarAdapter.DayViewHolder>() {
 
     private var days = mutableListOf<Int>()
     private var startOffset = 0 // Empty cells before first day
+
+    var selectedDay: Int? = null
 
     init {
         updateDaysInMonth()
@@ -57,13 +61,20 @@ class DashboardCalendarAdapter(
 
         val day = days[dayIndex]
         holder.view.text = day.toString()
+        holder.view.isClickable = true
+        holder.view.setOnClickListener {
+            onDateClick(day)
+        }
 
-        // Visual state: yellow glow when marked
-        if (workoutDays.contains(day)) {
-            Log.d("CalendarDebug", "Day $day: Setting YELLOW background")
+        if (day == selectedDay) {
+            if (workoutDays.contains(day)) {
+                holder.view.setBackgroundResource(R.drawable.calendar_selected_day_workout_background)
+            } else {
+                holder.view.setBackgroundResource(R.drawable.calendar_selected_day_background)
+            }
+        } else if (workoutDays.contains(day)) {
             holder.view.setBackgroundColor(Color.YELLOW)
         } else {
-            Log.d("CalendarDebug", "Day $day: Setting TRANSPARENT background")
             holder.view.setBackgroundColor(Color.TRANSPARENT)
         }
 
@@ -122,14 +133,7 @@ class DashboardCalendarAdapter(
     fun replaceAll(newItems: List<Workout>, username: String) {
         workoutDays.clear()
 
-        Log.d("CalendarDebug", "=== Starting replaceAll ===")
-        Log.d("CalendarDebug", "Username: $username")
-        Log.d("CalendarDebug", "Total workouts: ${newItems.size}")
-        Log.d("CalendarDebug", "Current month: $currentMonth, Current year: $currentYear")
-
         for (newItem in newItems) {
-            Log.d("CalendarDebug", "Checking workout - name: ${newItem.name}, datetime: ${newItem.datetime}")
-
             if (newItem.username == username) {
                 val itemCalendar = Calendar.getInstance()
                 itemCalendar.timeInMillis = newItem.datetime
@@ -137,8 +141,6 @@ class DashboardCalendarAdapter(
                 val itemMonth = itemCalendar.get(Calendar.MONTH)
                 val itemYear = itemCalendar.get(Calendar.YEAR)
                 val dayOfMonth = itemCalendar.get(Calendar.DAY_OF_MONTH)
-
-                Log.d("CalendarDebug", "Workout date: Month=$itemMonth, Year=$itemYear, Day=$dayOfMonth")
 
                 // Check if item is in currently displayed month
                 if (itemMonth == currentMonth && itemYear == currentYear) {
@@ -153,7 +155,6 @@ class DashboardCalendarAdapter(
         }
 
         Log.d("CalendarDebug", "Final workoutDays set: $workoutDays")
-        Log.d("CalendarDebug", "=== End replaceAll ===")
 
         notifyDataSetChanged()
     }

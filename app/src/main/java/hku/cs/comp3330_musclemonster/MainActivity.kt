@@ -14,14 +14,15 @@ import androidx.core.content.edit
 import android.Manifest
 import android.content.pm.PackageManager
 import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts // For notifications
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import hku.cs.comp3330_musclemonster.notifications.NotificationHelper
-
-import android.widget.Button // Import the Button class
-import androidx.work.* // Import WorkManager classes
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import hku.cs.comp3330_musclemonster.notifications.NotificationWorker
 import java.util.concurrent.TimeUnit
+
 class MainActivity : AppCompatActivity() {
 
     private val requestPermissionLauncher =
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         NotificationHelper.createNotificationChannel(this)
         askNotificationPermission()
+        scheduleDailyReminder()
 
         val etUsername = findViewById<TextInputEditText>(R.id.etUsername)
         val etPassword = findViewById<TextInputEditText>(R.id.etPassword)
@@ -101,5 +103,18 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Login failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
+    }
+
+    private fun scheduleDailyReminder() {
+        val periodicWorkRequest = PeriodicWorkRequestBuilder< NotificationWorker>(1, TimeUnit.DAYS)
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            "DailyPetReminder", // A unique name for this job
+            ExistingPeriodicWorkPolicy.KEEP, // If this job is already scheduled, do nothing.
+            periodicWorkRequest
+        )
+
+        Log.d("MainActivity", "Daily reminder worker has been scheduled.")
     }
 }
